@@ -1,0 +1,14 @@
+# Python 3
+__pycache__/
+
+# macOS
+.DS_Store
+
+# Atom Remote Sync
+.remote-sync.json
+
+# Visual Studio Code
+.vscode/
+
+# Pipenv
+Bestand_Einzelbaeume_Koeln_0.csv

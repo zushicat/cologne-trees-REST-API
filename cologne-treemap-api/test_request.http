@@ -1,0 +1,9 @@
+POST http://localhost:8082
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "id": 12345,
+    "method": "cradle.fancyrequest",
+    "params": {"stuff": "Foo Stuff"}
+}
