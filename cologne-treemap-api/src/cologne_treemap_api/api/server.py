@@ -7,7 +7,7 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.exceptions import HTTPException
 
 from .exceptions import InternalError
-from cologne_treemap_api.treemap import give_result, test_request
+from cologne_treemap_api.treemap import give_result, test_request, geo_overall_numbers_per_district
 
 
 def http_exception(req: Request, e: HTTPException) -> Response:
@@ -32,6 +32,9 @@ def application(request):
     try:
         dispatcher['cradle.fancyrequest'] = json_rpc_except(give_result)
         dispatcher['mytestrequest'] = json_rpc_except(test_request)
+
+        dispatcher['geo.district.overallnumbers'] = json_rpc_except(geo_overall_numbers_per_district)
+
         response = JSONRPCResponseManager.handle(request.data, dispatcher)
         return (Response(response.json, mimetype='application/json'))
     except Exception as e:

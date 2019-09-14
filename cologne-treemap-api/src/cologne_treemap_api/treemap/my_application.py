@@ -3,6 +3,7 @@ import os
 from typing import Any, Dict, List
 
 from ._make_fancy_shit import do_something
+from ._by_geo import get_geo_overall_numbers_per_district
 
 DIRNAME = os.environ["DATA_LOCATION"]
 TREEDATA = []
@@ -17,15 +18,18 @@ def load_tree_data() -> List[Dict[str, Any]]:
                 line = json.loads(line)
                 TREEDATA.append(line)
             except Exception as e:
-                # print(f"TREEDATA load line ERR ---> {e}")
                 pass
 
-def _print_first_tree() -> None:
-    print(json.dumps(TREEDATA[0], indent=2, ensure_ascii=False))
+
+def geo_overall_numbers_per_district() -> Dict[str, Any]:
+    try:
+        return get_geo_overall_numbers_per_district(TREEDATA)
+    except Exception as e:
+        return {"status": f"ERROR! {e}"}
 
 
 def give_result(stuff: str) -> Dict[str, Any]:
-    _print_first_tree()
+    geo_something(TREEDATA)
     try:
         with open(f"./data/some_data.json") as f:
             data = json.load(f)

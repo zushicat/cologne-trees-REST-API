@@ -4,6 +4,6 @@ Content-Type: application/json
 {
     "jsonrpc": "2.0",
     "id": 12345,
-    "method": "cradle.fancyrequest",
-    "params": {"stuff": "Foo Stuff"}
+    "method": "geo.district.overallnumbers",
+    "params": {}
 }
