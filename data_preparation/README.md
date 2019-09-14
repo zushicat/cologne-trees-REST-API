@@ -28,9 +28,9 @@ Generates one object per tree
         "lng": lng from "Y_Koordina"
         "geo_x": "X_Koordina"
         "geo_y": "Y_Koordina"
-        "neighbourhood": neighbourhood,
-        "suburb": suburb,
-        "city_district": city_district,
+        "neighbourhood": matched neighbourhood from geo data
+        "suburb": matched suburb from geo data
+        "city_district": matched city_district from geo data
     },
     "tree_info":
     {
