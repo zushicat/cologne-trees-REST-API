@@ -90,7 +90,7 @@ Content-Type: application/json
 - Useful Extensions: Python, REST Client
 - If you want to use REST Client for easy http request (recommended):
     - Create file with extension .http (i.e. test_request.http)
-    - Copy request text from below into file
+    - Copy request text from above into file
     - "Send Request" will appear in file: click to request (tab with response will open)
 
 
@@ -101,14 +101,18 @@ For district and suburb numbers, see: https://de.wikipedia.org/wiki/Liste_der_St
 
 #### geo.district_number.numbers
 - "params": {}
+
 Returns number of trees of all 9 districts, their suburbs and (if available) the neighbourhoods of these suburbs
 - "params": {"district_numbers": "1,3"}
+
 Returns number of trees of requested, their suburbs and (if available) the neighbourhoods of these suburbs
 
 #### geo.suburb_number.number
 - "params": {"suburb_number": "103"}
+
 Returns number of trees of requested suburb and (if available) the neighbourhoods of this suburb
 
 #### geo.suburb_number.genus.number
 - "params": {"suburb_number": "103"}
+
 Returns number of trees and number of (different) genus of requested suburb, as well as each genus with number of trees and german names
