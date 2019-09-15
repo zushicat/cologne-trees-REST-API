@@ -23,8 +23,9 @@ def load_tree_data() -> List[Dict[str, Any]]:
 
 def geo_numbers_by_district_number(district_numbers: str = None) -> Dict[str, Any]:
     try:
-        if len(district_numbers.strip()) == 0:
-            district_numbers = None
+        if district_numbers is not None:
+            if len(district_numbers.strip()) == 0:
+                district_numbers = None
         return get_geo_numbers_by_district_number(TREEDATA, district_numbers)
     except Exception as e:
         return {"status": f"ERROR! {e}"}
