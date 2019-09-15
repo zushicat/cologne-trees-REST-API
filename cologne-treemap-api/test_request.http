@@ -4,6 +4,6 @@ Content-Type: application/json
 {
     "jsonrpc": "2.0",
     "id": 12345,
-    "method": "geo.suburb_number.genus.number",
-    "params": {"suburb_number": "103"}
+    "method": "tree.attr.age.overview",
+    "params": {"sort_by": "number"}
 }

@@ -117,3 +117,8 @@ Returns number of trees of requested suburb and (if available) the neighbourhood
 - "params": {"suburb_number": "103"}
 
 Returns number of trees and number of (different) genus of requested suburb, as well as each genus with number of trees and german names
+
+#### tree.attr.age.overview
+- "params": {"sort_by": "age"} OR "params": {"sort_by": "number"}
+
+Returns age and number of planted trees (of age), sorted by age or by number
