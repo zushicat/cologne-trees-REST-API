@@ -6,7 +6,7 @@ This is a experimental hobby project
 
 
 If you are only interested in running the API:
-Ignore 'data_preparation' and use just use 'cologne-treemap-api' (where the API is located)
+Ignore 'data_preparation' and use just use 'cologne-treemap-api' (where the API is located, see detailled README in directory)
 
 
 Based on the csv dataset "Baumkataster", published by Stadt Köln (latest version of 2017-04-19):
