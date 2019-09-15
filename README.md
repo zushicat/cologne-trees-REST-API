@@ -2,11 +2,12 @@
 An API to request information about city trees in Cologne, Germany.
 
 #### Beware
-This is an experimental hobby project
+This is an experimental hobby project and work in progress.
 
 
 If you are only interested in running the API:
-Ignore 'data_preparation' and just use the directory 'cologne-treemap-api' (where the API is located, see detailled README in directory)
+
+Ignore 'data_preparation' and just use the directory 'cologne-treemap-api' (where the API is located, see detailled README in API directory)
 
 
 Based on the csv dataset "Baumkataster", published by Stadt Köln (latest version of 2017-04-19):
