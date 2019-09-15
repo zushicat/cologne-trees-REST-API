@@ -12,7 +12,7 @@ No additional fancyness (such as logging, testing & stuff) implemented.
 
 ### Start Docker Container
 - Change into directory "cologne-treemap-api"
-- Build and run docker container (with exposed port) named "cologne-treemap-api"
+- Build and run docker container i.e. named "cologne-treemap-api"
 ```
 $docker build -t cologne-treemap-api .
 ```
