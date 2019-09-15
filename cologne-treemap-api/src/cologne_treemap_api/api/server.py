@@ -7,7 +7,7 @@ from werkzeug.wrappers import Request, Response
 from werkzeug.exceptions import HTTPException
 
 from .exceptions import InternalError
-from cologne_treemap_api.treemap import geo_numbers_by_district_number, geo_numbers_by_suburb_number, geo_genus_numbers_by_suburb_number, tree_attr_age_numbers, tree_attr_genus_numbers
+from cologne_treemap_api.treemap import geo_numbers_by_district_number, geo_numbers_by_suburb_number, geo_genus_numbers_by_suburb_number, tree_attr_age_numbers, tree_attr_genus_numbers, geo_age_by_suburb_number
 
 
 def http_exception(req: Request, e: HTTPException) -> Response:
@@ -34,6 +34,7 @@ def application(request):
         dispatcher['geo.suburb_number.genus.number'] = json_rpc_except(geo_genus_numbers_by_suburb_number)
         dispatcher['tree.attr.age.numbers'] = json_rpc_except(tree_attr_age_numbers)
         dispatcher['tree.attr.genus.numbers'] = json_rpc_except(tree_attr_genus_numbers)
+        dispatcher['geo.suburb_number.age'] = json_rpc_except(geo_age_by_suburb_number)
 
         response = JSONRPCResponseManager.handle(request.data, dispatcher)
         return (Response(response.json, mimetype='application/json'))

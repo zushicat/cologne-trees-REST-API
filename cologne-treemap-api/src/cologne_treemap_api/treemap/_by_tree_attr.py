@@ -21,7 +21,6 @@ def get_tree_attr_age_numbers(treemap: List[Dict[str, Any]], sort_by: str) -> Di
 
     return numbers_by_year
 
-
 def get_tree_attr_genus_numbers(treemap: List[Dict[str, Any]], sort_by: str) -> Dict[str, Any]:
     numbers_by_genus = {}
     for tree in treemap:
