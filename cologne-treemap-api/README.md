@@ -1,16 +1,6 @@
 ### Description
-A very simple API using werkzeug and jsrpc
-- when running docker container, in Dockerfile
-CMD ["poetry", "run", "python", "-m", "api_cradle.api"]:
-- starts service in src/api/_main_.py
-- src/api/server.py: function "application" waits for jsrpc request
-- on request: dispatcher delegates to src/fancy_stuff/_my_application.py
-    - passing the attributes from "params" in request
-    - a file in /data is read, getting the attribute "name"
-    - both values are passed to do_something in _make_fancy_shit
-        - returns json
-    - returns returned json
-- returns API response
+A simple API to request different accumulations about city trees in Cologne, Germany. 
+(Data is taken from the "Baumkataster" csv, published by Stadt Köln)
 
 No additional fancyness (such as logging, testing & stuff) implemented.
 
@@ -45,18 +35,21 @@ $docker run --rm -it -p 8080:80 -v $(pwd):/app cologne-treemap-api
 (If port 8080 is already used by something else, just change the port to i.e. 8081)
 
 
-### request
-2 request methods implemented:
+### Request endpoints
+Use any http request to localhost with the running docker port (as in example: localhost:8080) and the endpoint you like to request
 
-1) mytestrequest
+#### Example
+You can request the endpoint 'geo.district_number.numbers' with or without parameters.
+If given no parameters, all 9 districts are taken.
+
 with curl
 ```
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"jsonrpc":"2.0","id":12345,"method":"mytestrequest","params":{}}' \
+  --data '{"jsonrpc":"2.0","id":12345,"method":"geo.district_number.numbers","params":{}}' \
   http://localhost:8080
 ```
-or with REST Client extension for Visual Studio (see below)
+or with REST Client extension for Visual Studio
 ```
 POST http://localhost:8080
 Content-Type: application/json
@@ -64,32 +57,21 @@ Content-Type: application/json
 {
     "jsonrpc": "2.0",
     "id": 12345,
-    "method": "mytestrequest",
+    "method": "geo.district_number.numbers",
     "params": {}
 }
 ```
 
-returns
-```
-{
-  "result": {
-    "status": "YAY! API is running."
-  },
-  "id": 12345,
-  "jsonrpc": "2.0"
-}
-```
+If you give (comma separated) city districts (1-9, see: https://de.wikipedia.org/wiki/Liste_der_Stadtbezirke_und_Stadtteile_K%C3%B6lns), those will be processed.
 
-2) geo.district.overallnumbers
-pass parameter "stuff" by http request
 with curl
 ```
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"jsonrpc":"2.0","id":12345,"method":"geo.district.overallnumbers","params":{"district_numbers":"3,4,5"}}' \
+  --data '{"jsonrpc":"2.0","id":12345,"method":"geo.district_number.numbers","params":{"district_numbers":"1,3"}}' \
   http://localhost:8080
 ```
-or with REST Client extension for Visual Studio (see below)
+or with REST Client extension for Visual Studio
 ```
 POST http://localhost:8080
 Content-Type: application/json
@@ -97,33 +79,7 @@ Content-Type: application/json
 {
     "jsonrpc": "2.0",
     "id": 12345,
-    "method": "geo.district.overallnumbers",
-    "params": {"district_numbers": "3,4,5"}
-}
-```
-or select all districts by using no params
-```
-POST http://localhost:8080
-Content-Type: application/json
-
-{
-    "jsonrpc": "2.0",
-    "id": 12345,
-    "method": "geo.district.overallnumbers",
-    "params": {}
-}
-```
-
-returns
-```
-{
-  "result": {
-    "status": "YAY!",
-    "name from file": "Fuzzy Bear",
-    "name from request": "Foo Stuff",
-    "date": "2019-06-05 13:57:46.333072"
-  },
-  "id": 12345,
-  "jsonrpc": "2.0"
+    "method": "geo.district_number.numbers",
+    "params": {"district_numbers": "1,3"}
 }
 ```
