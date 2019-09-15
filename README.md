@@ -2,7 +2,7 @@
 An API to request information about city trees in Cologne, Germany.
 
 #### Beware
-This is a experimental hobby project
+This is an experimental hobby project
 
 
 If you are only interested in running the API:
