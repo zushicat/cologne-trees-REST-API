@@ -38,6 +38,14 @@ $docker run --rm -it -p 8080:80 -v $(pwd):/app cologne-treemap-api
 ### Request endpoints
 Use any http request to localhost with the running docker port (as in example: localhost:8080) and the endpoint you like to request
 
+#### Implemented Endpoints
+For now, following endpoints are implemented
+- geo.district_number.numbers
+- geo.suburb_number.number
+- geo.suburb_number.genus.number
+
+(See explanation below)
+
 #### Example
 You can request the endpoint 'geo.district_number.numbers' with or without parameters.
 If given no parameters, all 9 districts are taken.
@@ -83,3 +91,21 @@ Content-Type: application/json
     "params": {"district_numbers": "1,3"}
 }
 ```
+
+#### Endpoints
+
+For district and suburb numbers, see: https://de.wikipedia.org/wiki/Liste_der_Stadtbezirke_und_Stadtteile_K%C3%B6lns
+
+#### geo.district_number.numbers
+- "params": {}
+Returns number of trees of all 9 districts, their suburbs and (if available) the neighbourhoods of these suburbs
+- "params": {"district_numbers": "1,3"}
+Returns number of trees of requested, their suburbs and (if available) the neighbourhoods of these suburbs
+
+#### geo.suburb_number.number
+- "params": {"suburb_number": "103"}
+Returns number of trees of requested suburb and (if available) the neighbourhoods of this suburb
+
+#### geo.suburb_number.genus.number
+- "params": {"suburb_number": "103"}
+Returns number of trees and number of (different) genus of requested suburb, as well as each genus with number of trees and german names
