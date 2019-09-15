@@ -80,13 +80,13 @@ returns
 }
 ```
 
-2) cradle.fancyrequest
+2) geo.district.overallnumbers
 pass parameter "stuff" by http request
 with curl
 ```
 curl --header "Content-Type: application/json" \
   --request POST \
-  --data '{"jsonrpc":"2.0","id":12345,"method":"cradle.fancyrequest","params":{"stuff":"Foo Stuff"}}' \
+  --data '{"jsonrpc":"2.0","id":12345,"method":"geo.district.overallnumbers","params":{"district_numbers":"3,4,5"}}' \
   http://localhost:8080
 ```
 or with REST Client extension for Visual Studio (see below)
@@ -97,8 +97,20 @@ Content-Type: application/json
 {
     "jsonrpc": "2.0",
     "id": 12345,
-    "method": "cradle.fancyrequest",
-    "params": {"stuff": "Foo Stuff"}
+    "method": "geo.district.overallnumbers",
+    "params": {"district_numbers": "3,4,5"}
+}
+```
+or select all districts by using no params
+```
+POST http://localhost:8080
+Content-Type: application/json
+
+{
+    "jsonrpc": "2.0",
+    "id": 12345,
+    "method": "geo.district.overallnumbers",
+    "params": {}
 }
 ```
 

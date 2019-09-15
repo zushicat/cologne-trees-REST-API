@@ -1,7 +1,6 @@
-from .my_application import give_result, test_request, load_tree_data, geo_overall_numbers_per_district
+from .my_application import give_result, load_tree_data, geo_numbers_per_district_number
 __all__ = [
+    "geo_numbers_per_district_number",
     "give_result",
-    "geo_overall_numbers_per_district",
     "load_tree_data",
-    "test_request"
 ]
