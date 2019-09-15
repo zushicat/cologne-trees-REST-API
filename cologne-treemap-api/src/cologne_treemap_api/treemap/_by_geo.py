@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from typing import Any, Dict, List
@@ -242,4 +243,69 @@ def get_geo_genus_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb
     
     numbers_by_suburb[suburb_number]["number_of_genus"] = len(numbers_by_suburb[suburb_number]["genus"].keys())
     
+    return numbers_by_suburb
+
+def get_geo_age_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: str, sort_by: str) -> Dict[str, Any]:
+    current_year = int(datetime.datetime.today().year)
+    # ***
+    # get suburb_numbers
+    suburb_numbers = {}
+    for district_number, suburb_vals in SUBURBNUMBERS.items():
+        for s_number, suburb in suburb_vals.items():
+            suburb_numbers[s_number] = suburb
+    
+    # ***
+    # only valid suburb number
+    if suburb_number not in suburb_numbers.keys():
+        return {"status": f"ERROR! Suburb number {suburb_number} does not exist"}
+    
+    requested_suburb_name = suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
+    
+    # ***
+    # process requested suburb
+    numbers_by_suburb = {}
+    for tree in treemap:
+        try:
+            district_number = tree["base_info"]["district_number"]
+
+            district = tree["geo_info"]["city_district"]
+            suburb = tree["geo_info"]["suburb"]
+            neighbourhood = tree["geo_info"]["neighbourhood"]
+
+            genus = tree["tree_info"]["genus"]
+            if genus in ["", "unbekannt"]:
+                genus = "unknown"
+            name_german = tree["tree_info"]["name_german"]
+
+            year_sprout = tree["tree_info"]["year_sprout"]
+            age = current_year - year_sprout
+
+            if district is None:  # about 80 trees: they do have lat, lng
+                continue
+
+            # ***
+            # ignore suburbs that do not belong officially to district
+            if suburb.replace("/", " ").replace("-", " ") != requested_suburb_name:
+                continue
+
+            if numbers_by_suburb.get(suburb_number) is None:
+                numbers_by_suburb[suburb_number] = {
+                    "suburb_name": suburb,
+                    "age": {}
+                }
+            
+            if numbers_by_suburb[suburb_number]["age"].get(age) is None:
+                numbers_by_suburb[suburb_number]["age"][age] = 0
+            
+            numbers_by_suburb[suburb_number]["age"][age] += 1
+
+        except Exception as e:
+            continue
+    
+    for suburb_number, suburb_vals in numbers_by_suburb.items():
+        if sort_by == "age":
+            numbers_by_suburb[suburb_number]["age"] = {k: numbers_by_suburb[suburb_number]["age"][k] for k in sorted(numbers_by_suburb[suburb_number]["age"])}
+        if sort_by == "number":
+            numbers_by_suburb[suburb_number]["age"] = {k: numbers_by_suburb[suburb_number]["age"][k] for k in sorted(numbers_by_suburb[suburb_number]["age"], key=numbers_by_suburb[suburb_number]["age"].get, reverse=True)}
+
     return numbers_by_suburb
