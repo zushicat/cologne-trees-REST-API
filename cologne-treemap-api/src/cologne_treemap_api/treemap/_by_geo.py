@@ -2,7 +2,7 @@ import json
 
 from typing import Any, Dict, List
 
-def get_geo_numbers_per_district_number(treemap: List[Dict[str, Any]], district_numbers: str = None) -> Dict[str, Any]:
+def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_numbers: str = None) -> Dict[str, Any]:
     # ***
     # check requested district; if None: take all
     requested_districts = []
@@ -11,8 +11,8 @@ def get_geo_numbers_per_district_number(treemap: List[Dict[str, Any]], district_
             requested_districts.append(str(i))
     else:
         district_numbers = district_numbers.strip()
-        # if district_numbers.find(",") == -1 and len(district_numbers) > 1:
-        #     return {"status": "ERROR! Insert numbers from 1-9, comma-separated if more than 1 district"}
+        if district_numbers.find(",") == -1 and len(district_numbers) > 1:
+            return {"status": "ERROR! Insert numbers from 1-9, comma-separated if more than 1 district"}
 
         requested_districts = [x.strip() for x in district_numbers.split(",") if x.strip().isdigit()]
     
@@ -48,7 +48,6 @@ def get_geo_numbers_per_district_number(treemap: List[Dict[str, Any]], district_
             # ***
             # ignore suburbs that do not belong officially to district
             if suburb.replace("/", " ").replace("-", " ") not in suburb_numbers[district_number]:
-                print(suburb)
                 continue
 
             # ***
@@ -109,3 +108,6 @@ def get_geo_numbers_per_district_number(treemap: List[Dict[str, Any]], district_
     numbers_by_district = tmp
 
     return numbers_by_district
+
+def get_geo_numbers_by_suburb_number() -> None:
+    pass
