@@ -4,6 +4,6 @@ Content-Type: application/json
 {
     "jsonrpc": "2.0",
     "id": 12345,
-    "method": "geo.district_number.numbers",
-    "params": {"district_numbers": "1"}
+    "method": "geo.suburb_number.number",
+    "params": {"suburb_number": "101"}
 }

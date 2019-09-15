@@ -2,6 +2,13 @@ import json
 
 from typing import Any, Dict, List
 
+# ***
+# initially load global
+SUBURBNUMBERS = {}
+with open(f"./data/suburb_number.json") as f:
+    SUBURBNUMBERS = json.load(f)
+
+
 def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_numbers: str = None) -> Dict[str, Any]:
     # ***
     # check requested district; if None: take all
@@ -23,9 +30,10 @@ def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_n
 
     # ***
     # suburbs that belong officially to district number
-    with open(f"./data/suburb_number.json") as f:
-        suburb_numbers = json.load(f)
-    for district_number, suburbs in suburb_numbers.items():
+    # with open(f"./data/suburb_number.json") as f:
+    #     suburb_numbers = json.load(f)
+    suburb_numbers = {}
+    for district_number, suburbs in SUBURBNUMBERS.items():
         suburb_numbers[district_number] = suburbs.values()
         suburb_numbers[district_number] = [x.replace("/", " ").replace("-", " ") for x in suburb_numbers[district_number]]
 
@@ -109,5 +117,58 @@ def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_n
 
     return numbers_by_district
 
-def get_geo_numbers_by_suburb_number() -> None:
-    pass
+def get_geo_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: str = None) -> Dict[str, Any]:
+    # ***
+    # get suburb_numbers
+    suburb_numbers = {}
+    for district_number, suburb_vals in SUBURBNUMBERS.items():
+        for s_number, suburb in suburb_vals.items():
+            suburb_numbers[s_number] = suburb
+    
+    # ***
+    # only valid suburb number
+    if suburb_number not in suburb_numbers.keys():
+        return {"status": f"ERROR! Suburb number {suburb_number} does not exist"}
+    
+    requested_suburb_name = suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
+    
+    # ***
+    # process requested suburb
+    numbers_by_suburb = {}
+    for tree in treemap:
+        try:
+            district_number = tree["base_info"]["district_number"]
+
+            district = tree["geo_info"]["city_district"]
+            suburb = tree["geo_info"]["suburb"]
+            neighbourhood = tree["geo_info"]["neighbourhood"]
+
+            if district is None:  # about 80 trees: they do have lat, lng
+                continue
+
+            # ***
+            # ignore suburbs that do not belong officially to district
+            if suburb.replace("/", " ").replace("-", " ") != requested_suburb_name:
+                continue
+
+            if numbers_by_suburb.get(suburb_number) is None:
+                numbers_by_suburb[suburb_number] = {
+                    "suburb_name": suburb,
+                    "number_of_trees": 0,
+                    "neighbourhoods": {}
+                }
+                
+            numbers_by_suburb[suburb_number]["number_of_trees"] += 1
+
+            if neighbourhood is not None:
+                if numbers_by_suburb[suburb_number]["neighbourhoods"].get(neighbourhood) is None:
+                    numbers_by_suburb[suburb_number]["neighbourhoods"][neighbourhood] = {
+                        "number_of_trees": 0,
+                    }
+                
+                numbers_by_suburb[suburb_number]["neighbourhoods"][neighbourhood]["number_of_trees"] += 1
+
+        except Exception as e:
+            continue
+    
+    return numbers_by_suburb
