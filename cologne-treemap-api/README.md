@@ -36,6 +36,7 @@ For now, following endpoints are implemented
 - geo.district_number.numbers
 - geo.suburb_number.number
 - geo.suburb_number.genus.number
+- tree.attr.age.overview
 
 (See explanation below)
 
@@ -121,4 +122,4 @@ Returns number of trees and number of (different) genus of requested suburb, as 
 #### tree.attr.age.overview
 - "params": {"sort_by": "age"} OR "params": {"sort_by": "number"}
 
-Returns age and number of planted trees (of age), sorted by age or by number
+Returns age of trees and according number of planted trees, sorted either by age or by number
