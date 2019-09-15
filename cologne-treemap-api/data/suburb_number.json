@@ -1,0 +1,115 @@
+{
+    "1":
+    {
+        "101": "Altstadt-Süd",
+        "102": "Neustadt-Süd",
+        "103": "Altstadt-Nord",
+        "104": "Neustadt-Nord",
+        "105": "Deutz"
+    },
+    "2":
+    {
+        "201": "Bayenthal",
+        "202": "Marienburg (Köln)",
+        "203": "Raderberg",
+        "204": "Raderthal",
+        "205": "Zollstock",
+        "206": "Rondorf",
+        "207": "Hahnwald",
+        "208": "Rodenkirchen",
+        "209": "Weiß",
+        "210": "Sürth",
+        "211": "Godorf",
+        "212": "Immendorf",
+        "213": "Meschenich"
+    },
+    "3":
+    {
+        "301": "Klettenberg",
+        "302": "Sülz",
+        "303": "Lindenthal",
+        "304": "Braunsfeld",
+        "305": "Junkersdorf",
+        "306": "Müngersdorf",
+        "307": "Weiden",
+        "308": "Lövenich",
+        "309": "Widdersdorf"
+    },
+    "4":
+    {
+        "401": "Ehrenfeld",
+        "402": "Neuehrenfeld",
+        "403": "Bickendorf",
+        "404": "Vogelsang",
+        "405": "Bocklemünd/Mengenich",
+        "406": "Ossendorf"
+    },
+    "5":
+    {
+        "501": "Nippes",
+        "502": "Mauenheim",
+        "503": "Riehl",
+        "504": "Weidenpesch",
+        "505": "Longerich",
+        "506": "Niehl",
+        "507": "Bilderstöckchen"
+    },
+    "6":
+    {
+        "601": "Merkenich",
+        "602": "Fühlingen",
+        "603": "Seeberg",
+        "604": "Heimersdorf",
+        "605": "Lindweiler",
+        "606": "Pesch",
+        "607": "Esch/Auweiler",
+        "608": "Volkhoven/Weiler",
+        "609": "Chorweiler",
+        "610": "Blumenberg",
+        "611": "Roggendorf/Thenhoven",
+        "612": "Worringen"
+    },
+    "7":
+    {
+        "701": "Poll",
+        "702": "Westhoven",
+        "703": "Ensen",
+        "704": "Gremberghoven",
+        "705": "Eil",
+        "706": "Porz",
+        "707": "Urbach",
+        "708": "Elsdorf",
+        "709": "Grengel",
+        "710": "Wahnheide",
+        "711": "Wahn",
+        "712": "Lind",
+        "713": "Libur",
+        "714": "Zündorf",
+        "715": "Langel",
+        "716": "Finkenberg"
+    },
+    "8":
+    {
+        "801": "Humboldt/Gremberg",
+        "802": "Kalk",
+        "803": "Vingst",
+        "804": "Höhenberg",
+        "805": "Ostheim",
+        "806": "Merheim",
+        "807": "Brück",
+        "808": "Rath/Heumar",
+        "809": "Neubrück"
+    },
+    "9":
+    {
+        "901": "Mülheim",
+        "902": "Buchforst",
+        "903": "Buchheim",
+        "904": "Holweide",
+        "905": "Dellbrück",
+        "906": "Höhenhaus",
+        "907": "Dünnwald",
+        "908": "Stammheim",
+        "909": "Flittard"
+    }
+}
