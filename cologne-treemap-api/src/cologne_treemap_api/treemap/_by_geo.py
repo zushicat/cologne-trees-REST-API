@@ -172,3 +172,74 @@ def get_geo_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb_numbe
             continue
     
     return numbers_by_suburb
+
+def get_geo_genus_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: str = None) -> Dict[str, Any]:
+    # ***
+    # get suburb_numbers
+    suburb_numbers = {}
+    for district_number, suburb_vals in SUBURBNUMBERS.items():
+        for s_number, suburb in suburb_vals.items():
+            suburb_numbers[s_number] = suburb
+    
+    # ***
+    # only valid suburb number
+    if suburb_number not in suburb_numbers.keys():
+        return {"status": f"ERROR! Suburb number {suburb_number} does not exist"}
+    
+    requested_suburb_name = suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
+    
+    # ***
+    # process requested suburb
+    numbers_by_suburb = {}
+    for tree in treemap:
+        try:
+            district_number = tree["base_info"]["district_number"]
+
+            district = tree["geo_info"]["city_district"]
+            suburb = tree["geo_info"]["suburb"]
+            neighbourhood = tree["geo_info"]["neighbourhood"]
+
+            genus = tree["tree_info"]["genus"]
+            if genus in ["", "unbekannt"]:
+                genus = "unknown"
+            name_german = tree["tree_info"]["name_german"]
+
+            if district is None:  # about 80 trees: they do have lat, lng
+                continue
+
+            # ***
+            # ignore suburbs that do not belong officially to district
+            if suburb.replace("/", " ").replace("-", " ") != requested_suburb_name:
+                continue
+
+            if numbers_by_suburb.get(suburb_number) is None:
+                numbers_by_suburb[suburb_number] = {
+                    "suburb_name": suburb,
+                    "number_of_trees": 0,
+                    "number_of_genus": 0,
+                    "genus": {}
+                }
+            
+            numbers_by_suburb[suburb_number]["number_of_trees"] += 1
+
+            if genus is not None:
+                if numbers_by_suburb[suburb_number]["genus"].get(genus) is None:
+                    numbers_by_suburb[suburb_number]["genus"][genus] = {
+                        "number_of_trees": 0,
+                        "german_names": []
+                    }
+
+                numbers_by_suburb[suburb_number]["genus"][genus]["number_of_trees"] += 1
+                if name_german is not None:
+                    for n in name_german:
+                        if len(n) == 0:
+                            continue
+                        if n not in numbers_by_suburb[suburb_number]["genus"][genus]["german_names"]:
+                            numbers_by_suburb[suburb_number]["genus"][genus]["german_names"].append(n)
+
+        except Exception as e:
+            continue
+    
+    numbers_by_suburb[suburb_number]["number_of_genus"] = len(numbers_by_suburb[suburb_number]["genus"].keys())
+    
+    return numbers_by_suburb
