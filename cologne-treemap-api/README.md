@@ -97,7 +97,7 @@ Content-Type: application/json
 
 
 
-### Endpoints
+## Endpoints
 
 For district and suburb numbers, see: https://de.wikipedia.org/wiki/Liste_der_Stadtbezirke_und_Stadtteile_K%C3%B6lns
 
