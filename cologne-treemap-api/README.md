@@ -8,14 +8,6 @@ No additional fancyness (such as logging, testing & stuff) implemented.
 - install latest version of docker
 - (maybe: docker --> preferences --> allowcate more memory)
 
-### If you are using Visual Studio Code
-- (If you are using OSX, install with brew cask install visual-studio-code)
-- Useful Extensions: Python, REST Client
-- If you want to use REST Client for easy http request (recommended):
-    - Create file with extension .http (i.e. test_request.http)
-    - Copy request text from below into file
-    - "Send Request" will appear in file: click to request (tab with response will open)
-
 
 ### Start Docker Container
 - Change into directory "cologne-treemap-api"
@@ -92,7 +84,18 @@ Content-Type: application/json
 }
 ```
 
-#### Endpoints
+
+### If you are using Visual Studio Code
+- (If you are using OSX, install with brew cask install visual-studio-code)
+- Useful Extensions: Python, REST Client
+- If you want to use REST Client for easy http request (recommended):
+    - Create file with extension .http (i.e. test_request.http)
+    - Copy request text from below into file
+    - "Send Request" will appear in file: click to request (tab with response will open)
+
+
+
+### Endpoints
 
 For district and suburb numbers, see: https://de.wikipedia.org/wiki/Liste_der_Stadtbezirke_und_Stadtteile_K%C3%B6lns
 
