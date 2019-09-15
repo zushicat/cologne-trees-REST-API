@@ -105,7 +105,7 @@ For district and suburb numbers, see: https://de.wikipedia.org/wiki/Liste_der_St
 Returns number of trees of all 9 districts, their suburbs and (if available) the neighbourhoods of these suburbs
 - "params": {"district_numbers": "1,3"}
 
-Returns number of trees of requested, their suburbs and (if available) the neighbourhoods of these suburbs
+Returns number of trees of requested districts (here 1 and 3), their suburbs and (if available) the neighbourhoods of these suburbs
 
 #### geo.suburb_number.number
 - "params": {"suburb_number": "103"}
