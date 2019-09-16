@@ -14,15 +14,15 @@ No additional fancyness (such as logging, testing & stuff) implemented.
 - Change into directory "cologne-treemap-api"
 - Build and run docker container i.e. named "cologne-treemap-api"
 ```
-$docker build -t cologne-treemap-api .
+docker build -t cologne-treemap-api .
 ```
-simple run (the first port is the one to http request)
+simple run (the first port is the one you choose for http request)
 ```
 docker run -p 8080:80 cologne-treemap-api
 ```
 OR run with restart after every saved code change
 ```
-$docker run --rm -it -p 8080:80 -v $(pwd):/app cologne-treemap-api
+docker run --rm -it -p 8080:80 -v $(pwd):/app cologne-treemap-api
 ```
 
 (If port 8080 is already used by something else, just change the port to i.e. 8081)
