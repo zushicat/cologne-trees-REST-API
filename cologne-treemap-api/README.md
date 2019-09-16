@@ -87,7 +87,8 @@ Content-Type: application/json
 ```
 
 
-### If you are using Visual Studio Code
+### Coding stuff
+#### If you are using Visual Studio Code
 - (If you are using OSX, install with brew cask install visual-studio-code)
 - Useful Extensions: Python, REST Client
 - If you want to use REST Client for easy http request (recommended):
@@ -95,6 +96,14 @@ Content-Type: application/json
     - Copy request text from above into file
     - "Send Request" will appear in file: click to request (tab with response will open)
 
+
+#### Formatting (with black)
+Change into directory "cologne-treemap-api" und use consecutive following commands:
+```
+poetry shell
+make format
+exit
+```
 
 
 ## Endpoints

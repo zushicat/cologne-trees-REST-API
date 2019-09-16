@@ -5,5 +5,5 @@ Content-Type: application/json
     "jsonrpc": "2.0",
     "id": 12345,
     "method": "geo.suburb_number.age",
-    "params": {"suburb_number": "101", "sort_by": "age"}
+    "params": {"suburb_number": "102", "sort_by": "number"}
 }
