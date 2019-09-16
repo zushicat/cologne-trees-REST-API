@@ -10,20 +10,26 @@ with open(f"./data/suburb_number.json") as f:
     SUBURBNUMBERS = json.load(f)
 
 
-def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_numbers: str = None) -> Dict[str, Any]:
+def get_geo_numbers_by_district_number(
+    treemap: List[Dict[str, Any]], district_numbers: str = None
+) -> Dict[str, Any]:
     # ***
     # check requested district; if None: take all
     requested_districts = []
     if district_numbers is None:
-        for i in range(1,10):
+        for i in range(1, 10):
             requested_districts.append(str(i))
     else:
         district_numbers = district_numbers.strip()
         if district_numbers.find(",") == -1 and len(district_numbers) > 1:
-            return {"status": "ERROR! Insert numbers from 1-9, comma-separated if more than 1 district"}
+            return {
+                "status": "ERROR! Insert numbers from 1-9, comma-separated if more than 1 district"
+            }
 
-        requested_districts = [x.strip() for x in district_numbers.split(",") if x.strip().isdigit()]
-    
+        requested_districts = [
+            x.strip() for x in district_numbers.split(",") if x.strip().isdigit()
+        ]
+
     # ***
     # process trees of requested (or all) districts
     numbers_by_district = {}
@@ -36,7 +42,10 @@ def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_n
     suburb_numbers = {}
     for district_number, suburbs in SUBURBNUMBERS.items():
         suburb_numbers[district_number] = suburbs.values()
-        suburb_numbers[district_number] = [x.replace("/", " ").replace("-", " ") for x in suburb_numbers[district_number]]
+        suburb_numbers[district_number] = [
+            x.replace("/", " ").replace("-", " ")
+            for x in suburb_numbers[district_number]
+        ]
 
     for tree in treemap:
         try:
@@ -44,7 +53,7 @@ def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_n
 
             if district_number not in requested_districts:
                 continue
-            
+
             district = tree["geo_info"]["city_district"]
             suburb = tree["geo_info"]["suburb"]
             neighbourhood = tree["geo_info"]["neighbourhood"]
@@ -56,7 +65,10 @@ def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_n
 
             # ***
             # ignore suburbs that do not belong officially to district
-            if suburb.replace("/", " ").replace("-", " ") not in suburb_numbers[district_number]:
+            if (
+                suburb.replace("/", " ").replace("-", " ")
+                not in suburb_numbers[district_number]
+            ):
                 continue
 
             # ***
@@ -64,47 +76,72 @@ def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_n
             # collect numbers to filter out max later
             if numbers_district_in_district_numbers.get(district_number) is None:
                 numbers_district_in_district_numbers[district_number] = {}
-            if numbers_district_in_district_numbers[district_number].get(district) is None:
+            if (
+                numbers_district_in_district_numbers[district_number].get(district)
+                is None
+            ):
                 numbers_district_in_district_numbers[district_number][district] = 0
             numbers_district_in_district_numbers[district_number][district] += 1
 
             if numbers_by_district.get(district_number) is None:
                 numbers_by_district[district_number] = {
                     "number_of_trees": 0,
-                    "districts": {}
+                    "districts": {},
                 }
 
             numbers_by_district[district_number]["number_of_trees"] += 1
 
             if district is not None:
-                if numbers_by_district[district_number]["districts"].get(district) is None:
+                if (
+                    numbers_by_district[district_number]["districts"].get(district)
+                    is None
+                ):
                     numbers_by_district[district_number]["districts"][district] = {
                         "district_name": district,
                         "number_of_trees": 0,
-                        "suburbs": {}
+                        "suburbs": {},
                     }
 
-                numbers_by_district[district_number]["districts"][district]["number_of_trees"] += 1
+                numbers_by_district[district_number]["districts"][district][
+                    "number_of_trees"
+                ] += 1
 
                 if suburb is not None:
-                    if numbers_by_district[district_number]["districts"][district]["suburbs"].get(suburb) is None:
-                        numbers_by_district[district_number]["districts"][district]["suburbs"][suburb] = {
-                            "number_of_trees": 0,
-                            "neighbourhoods": {}
-                        }
+                    if (
+                        numbers_by_district[district_number]["districts"][district][
+                            "suburbs"
+                        ].get(suburb)
+                        is None
+                    ):
+                        numbers_by_district[district_number]["districts"][district][
+                            "suburbs"
+                        ][suburb] = {"number_of_trees": 0, "neighbourhoods": {}}
 
-                    numbers_by_district[district_number]["districts"][district]["suburbs"][suburb]["number_of_trees"] += 1
+                    numbers_by_district[district_number]["districts"][district][
+                        "suburbs"
+                    ][suburb]["number_of_trees"] += 1
 
                     if neighbourhood is not None:
-                        if numbers_by_district[district_number]["districts"][district]["suburbs"][suburb]["neighbourhoods"].get(neighbourhood) is None:
-                            numbers_by_district[district_number]["districts"][district]["suburbs"][suburb]["neighbourhoods"][neighbourhood] = {
-                                "number_of_trees": 0,
+                        if (
+                            numbers_by_district[district_number]["districts"][district][
+                                "suburbs"
+                            ][suburb]["neighbourhoods"].get(neighbourhood)
+                            is None
+                        ):
+                            numbers_by_district[district_number]["districts"][district][
+                                "suburbs"
+                            ][suburb]["neighbourhoods"][neighbourhood] = {
+                                "number_of_trees": 0
                             }
 
-                        numbers_by_district[district_number]["districts"][district]["suburbs"][suburb]["neighbourhoods"][neighbourhood]["number_of_trees"] += 1
+                        numbers_by_district[district_number]["districts"][district][
+                            "suburbs"
+                        ][suburb]["neighbourhoods"][neighbourhood][
+                            "number_of_trees"
+                        ] += 1
         except Exception as e:
             continue
-    
+
     # ***
     # get the 'real' district of district number, skip the rest
     sorted_district_numbers = list(numbers_district_in_district_numbers.keys())
@@ -113,26 +150,33 @@ def get_geo_numbers_by_district_number(treemap: List[Dict[str, Any]], district_n
     for district_number in sorted_district_numbers:
         district_vals = numbers_district_in_district_numbers[district_number]
         max_district = max(district_vals, key=district_vals.get)
-        tmp[district_number] = numbers_by_district[district_number]["districts"][max_district]
+        tmp[district_number] = numbers_by_district[district_number]["districts"][
+            max_district
+        ]
     numbers_by_district = tmp
 
     return numbers_by_district
 
-def get_geo_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: str = None) -> Dict[str, Any]:
+
+def get_geo_numbers_by_suburb_number(
+    treemap: List[Dict[str, Any]], suburb_number: str = None
+) -> Dict[str, Any]:
     # ***
     # get suburb_numbers
     suburb_numbers = {}
     for district_number, suburb_vals in SUBURBNUMBERS.items():
         for s_number, suburb in suburb_vals.items():
             suburb_numbers[s_number] = suburb
-    
+
     # ***
     # only valid suburb number
     if suburb_number not in suburb_numbers.keys():
         return {"status": f"ERROR! Suburb number {suburb_number} does not exist"}
-    
-    requested_suburb_name = suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
-    
+
+    requested_suburb_name = (
+        suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
+    )
+
     # ***
     # process requested suburb
     numbers_by_suburb = {}
@@ -156,39 +200,51 @@ def get_geo_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb_numbe
                 numbers_by_suburb[suburb_number] = {
                     "suburb_name": suburb,
                     "number_of_trees": 0,
-                    "neighbourhoods": {}
+                    "neighbourhoods": {},
                 }
-                
+
             numbers_by_suburb[suburb_number]["number_of_trees"] += 1
 
             if neighbourhood is not None:
-                if numbers_by_suburb[suburb_number]["neighbourhoods"].get(neighbourhood) is None:
-                    numbers_by_suburb[suburb_number]["neighbourhoods"][neighbourhood] = {
-                        "number_of_trees": 0,
-                    }
-                
-                numbers_by_suburb[suburb_number]["neighbourhoods"][neighbourhood]["number_of_trees"] += 1
+                if (
+                    numbers_by_suburb[suburb_number]["neighbourhoods"].get(
+                        neighbourhood
+                    )
+                    is None
+                ):
+                    numbers_by_suburb[suburb_number]["neighbourhoods"][
+                        neighbourhood
+                    ] = {"number_of_trees": 0}
+
+                numbers_by_suburb[suburb_number]["neighbourhoods"][neighbourhood][
+                    "number_of_trees"
+                ] += 1
 
         except Exception as e:
             continue
-    
+
     return numbers_by_suburb
 
-def get_geo_genus_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: str = None) -> Dict[str, Any]:
+
+def get_geo_genus_numbers_by_suburb_number(
+    treemap: List[Dict[str, Any]], suburb_number: str = None
+) -> Dict[str, Any]:
     # ***
     # get suburb_numbers
     suburb_numbers = {}
     for district_number, suburb_vals in SUBURBNUMBERS.items():
         for s_number, suburb in suburb_vals.items():
             suburb_numbers[s_number] = suburb
-    
+
     # ***
     # only valid suburb number
     if suburb_number not in suburb_numbers.keys():
         return {"status": f"ERROR! Suburb number {suburb_number} does not exist"}
-    
-    requested_suburb_name = suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
-    
+
+    requested_suburb_name = (
+        suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
+    )
+
     # ***
     # process requested suburb
     numbers_by_suburb = {}
@@ -218,16 +274,16 @@ def get_geo_genus_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb
                     "suburb_name": suburb,
                     "number_of_trees": 0,
                     "number_of_genus": 0,
-                    "genus": {}
+                    "genus": {},
                 }
-            
+
             numbers_by_suburb[suburb_number]["number_of_trees"] += 1
 
             if genus is not None:
                 if numbers_by_suburb[suburb_number]["genus"].get(genus) is None:
                     numbers_by_suburb[suburb_number]["genus"][genus] = {
                         "number_of_trees": 0,
-                        "german_names": []
+                        "german_names": [],
                     }
 
                 numbers_by_suburb[suburb_number]["genus"][genus]["number_of_trees"] += 1
@@ -235,17 +291,29 @@ def get_geo_genus_numbers_by_suburb_number(treemap: List[Dict[str, Any]], suburb
                     for n in name_german:
                         if len(n) == 0:
                             continue
-                        if n not in numbers_by_suburb[suburb_number]["genus"][genus]["german_names"]:
-                            numbers_by_suburb[suburb_number]["genus"][genus]["german_names"].append(n)
+                        if (
+                            n
+                            not in numbers_by_suburb[suburb_number]["genus"][genus][
+                                "german_names"
+                            ]
+                        ):
+                            numbers_by_suburb[suburb_number]["genus"][genus][
+                                "german_names"
+                            ].append(n)
 
         except Exception as e:
             continue
-    
-    numbers_by_suburb[suburb_number]["number_of_genus"] = len(numbers_by_suburb[suburb_number]["genus"].keys())
-    
+
+    numbers_by_suburb[suburb_number]["number_of_genus"] = len(
+        numbers_by_suburb[suburb_number]["genus"].keys()
+    )
+
     return numbers_by_suburb
 
-def get_geo_age_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: str, sort_by: str) -> Dict[str, Any]:
+
+def get_geo_age_by_suburb_number(
+    treemap: List[Dict[str, Any]], suburb_number: str, sort_by: str
+) -> Dict[str, Any]:
     current_year = int(datetime.datetime.today().year)
     # ***
     # get suburb_numbers
@@ -253,14 +321,16 @@ def get_geo_age_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: s
     for district_number, suburb_vals in SUBURBNUMBERS.items():
         for s_number, suburb in suburb_vals.items():
             suburb_numbers[s_number] = suburb
-    
+
     # ***
     # only valid suburb number
     if suburb_number not in suburb_numbers.keys():
         return {"status": f"ERROR! Suburb number {suburb_number} does not exist"}
-    
-    requested_suburb_name = suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
-    
+
+    requested_suburb_name = (
+        suburb_numbers[suburb_number].replace("/", " ").replace("-", " ")
+    )
+
     # ***
     # process requested suburb
     numbers_by_suburb = {}
@@ -289,23 +359,30 @@ def get_geo_age_by_suburb_number(treemap: List[Dict[str, Any]], suburb_number: s
                 continue
 
             if numbers_by_suburb.get(suburb_number) is None:
-                numbers_by_suburb[suburb_number] = {
-                    "suburb_name": suburb,
-                    "age": {}
-                }
-            
+                numbers_by_suburb[suburb_number] = {"suburb_name": suburb, "age": {}}
+
             if numbers_by_suburb[suburb_number]["age"].get(age) is None:
                 numbers_by_suburb[suburb_number]["age"][age] = 0
-            
+
             numbers_by_suburb[suburb_number]["age"][age] += 1
 
         except Exception as e:
             continue
-    
+
     for suburb_number, suburb_vals in numbers_by_suburb.items():
         if sort_by == "age":
-            numbers_by_suburb[suburb_number]["age"] = {k: numbers_by_suburb[suburb_number]["age"][k] for k in sorted(numbers_by_suburb[suburb_number]["age"])}
+            numbers_by_suburb[suburb_number]["age"] = {
+                k: numbers_by_suburb[suburb_number]["age"][k]
+                for k in sorted(numbers_by_suburb[suburb_number]["age"])
+            }
         if sort_by == "number":
-            numbers_by_suburb[suburb_number]["age"] = {k: numbers_by_suburb[suburb_number]["age"][k] for k in sorted(numbers_by_suburb[suburb_number]["age"], key=numbers_by_suburb[suburb_number]["age"].get, reverse=True)}
+            numbers_by_suburb[suburb_number]["age"] = {
+                k: numbers_by_suburb[suburb_number]["age"][k]
+                for k in sorted(
+                    numbers_by_suburb[suburb_number]["age"],
+                    key=numbers_by_suburb[suburb_number]["age"].get,
+                    reverse=True,
+                )
+            }
 
     return numbers_by_suburb
