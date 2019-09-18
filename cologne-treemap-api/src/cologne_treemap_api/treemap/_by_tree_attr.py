@@ -50,3 +50,28 @@ def get_tree_attr_genus_numbers(
         }
 
     return numbers_by_genus
+
+def get_tree_attr_name_german_numbers(
+    treemap: List[Dict[str, Any]], sort_by: str
+) -> Dict[str, Any]:
+    numbers_by_name_german = {}
+    for tree in treemap:
+        names_german = tree["tree_info"]["name_german"]
+
+        for name_german in names_german:
+            if name_german in ["", "unbekannt"]:
+                name_german = "unknown"
+
+            if numbers_by_name_german.get(name_german) is None:
+                numbers_by_name_german[name_german] = 0
+            numbers_by_name_german[name_german] += 1
+
+    if sort_by == "name":
+        numbers_by_name_german = {k: numbers_by_name_german[k] for k in sorted(numbers_by_name_german)}
+    if sort_by == "number":
+        numbers_by_name_german = {
+            k: numbers_by_name_german[k]
+            for k in sorted(numbers_by_name_german, key=numbers_by_name_german.get, reverse=True)
+        }
+
+    return numbers_by_name_german

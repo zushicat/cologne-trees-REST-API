@@ -118,12 +118,12 @@ Returns number of trees of all 9 districts, their suburbs and (if available) the
 
 Returns number of trees of requested districts (here 1 and 3), their suburbs and (if available) the neighbourhoods of these suburbs
 
-#### geo.suburb_number.number
+#### geo.suburb_number.numbers
 - "params": {"suburb_number": "103"}
 
 Returns number of trees of requested suburb and (if available) the neighbourhoods of this suburb
 
-#### geo.suburb_number.genus.number
+#### geo.suburb_number.genus.numbers
 - "params": {"suburb_number": "103"}
 
 Returns number of trees and number of (different) genus of requested suburb, as well as each genus with number of trees and german names
@@ -143,4 +143,12 @@ Returns age of trees and according number of planted trees, sorted either by age
 
 Returns genus of trees and according number of planted trees, sorted either by genus or by number
 
+#### tree.attr.name_german.numbers
+- "params": {"sort_by": "name"} OR "params": {"sort_by": "number"}
 
+Returns german name of trees and according number of planted trees, sorted either by german name or by number
+
+#### tree.geo.name_german.suburb.numbers
+- "params": {"name": "Linde"}
+
+Returns suburbs of occurrence and according number of planted trees

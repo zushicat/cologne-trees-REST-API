@@ -8,7 +8,15 @@ from ._by_geo import (
     get_geo_genus_numbers_by_suburb_number,
     get_geo_age_by_suburb_number,
 )
-from ._by_tree_attr import get_tree_attr_age_numbers, get_tree_attr_genus_numbers
+from ._by_tree_attr import (
+    get_tree_attr_age_numbers, 
+    get_tree_attr_genus_numbers, 
+    get_tree_attr_name_german_numbers,
+)
+
+from ._by_tree_geo import (
+    get_tree_geo_name_german_suburb_numbers,
+)
 
 DIRNAME = os.environ["DATA_LOCATION"]
 TREEDATA = []
@@ -82,5 +90,23 @@ def tree_attr_genus_numbers(sort_by: str = None) -> Dict[str, Any]:
         if sort_by not in ["genus", "number"]:
             return {"status": f"ERROR! 'sort_by' needs to be 'genus' or 'number'"}
         return get_tree_attr_genus_numbers(TREEDATA, sort_by)
+    except Exception as e:
+        return {"status": f"ERROR! {e}"}
+
+def tree_attr_name_german_numbers(sort_by: str = None) -> Dict[str, Any]:
+    try:
+        if sort_by is None:
+            sort_by = "genus"
+        if sort_by not in ["name", "number"]:
+            return {"status": f"ERROR! 'sort_by' needs to be 'name' or 'number'"}
+        return get_tree_attr_name_german_numbers(TREEDATA, sort_by)
+    except Exception as e:
+        return {"status": f"ERROR! {e}"}
+
+def tree_geo_name_german_suburb_numbers(
+    name: str = None
+) -> Dict[str, Any]:
+    try:
+        return get_tree_geo_name_german_suburb_numbers(TREEDATA, name)
     except Exception as e:
         return {"status": f"ERROR! {e}"}
