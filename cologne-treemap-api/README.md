@@ -147,3 +147,8 @@ Returns genus of trees and according number of planted trees, sorted either by g
 - "params": {"sort_by": "name"} OR "params": {"sort_by": "number"}
 
 Returns german name of trees and according number of planted trees, sorted either by german name or by number
+
+#### tree.geo.name_german.suburb.numbers
+- "params": {"name": "Linde"}
+
+Returns suburbs of occurrence and according number of planted trees
