@@ -104,9 +104,9 @@ def tree_attr_name_german_numbers(sort_by: str = None) -> Dict[str, Any]:
         return {"status": f"ERROR! {e}"}
 
 def tree_geo_name_german_suburb_numbers(
-    suburb_number: str = None
+    name: str = None
 ) -> Dict[str, Any]:
     try:
-        return get_tree_geo_name_german_suburb_numbers(TREEDATA, suburb_number)
+        return get_tree_geo_name_german_suburb_numbers(TREEDATA, name)
     except Exception as e:
         return {"status": f"ERROR! {e}"}
