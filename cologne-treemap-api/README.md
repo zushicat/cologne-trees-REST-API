@@ -37,6 +37,9 @@ For now, following endpoints are implemented
 - geo.suburb_number.number
 - geo.suburb_number.genus.number
 - tree.attr.age.overview
+- tree.attr.genus.numbers
+- tree.attr.name_german.numbers
+- tree.geo.name_german.suburb.numbers
 
 (See explanation below)
 
