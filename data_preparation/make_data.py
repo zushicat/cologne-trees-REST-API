@@ -18,13 +18,18 @@ with open("Bestand_Einzelbaeume_Koeln_0.csv") as f:
 with open("lat_lng_districts.json") as f:
     lat_lng_districts = json.load(f)
 
+with open("object_types.json") as f:
+    object_types = json.load(f)
+
 today = datetime.datetime.now()
+
+tree_id_written = []
 
 count_err = 0
 i = 0
 lines = []
 for row in rows:
-    print(i)
+    # print(i)
     i += 1
     try:
         x = int(row["X_Koordina"])
@@ -36,7 +41,7 @@ for row in rows:
         try:
             lat, lng = utm.to_latlon(x, y, 32, 'U')
         except Exception as e:
-            print(f"lat lng ERR ----> {e}")
+            # print(f"lat lng ERR ----> {e}")
             continue
         if lat is None or lng is None:
             continue
@@ -54,6 +59,13 @@ for row in rows:
             pass
         try:
             bole_radius = int(row["STAMMBIS"])
+        except:
+            pass
+
+        object_type = object_types.get(row["Objekttyp"])
+        try:
+            if object_type in ["NN", "Unbekannt"]:
+                object_type = "unknown"
         except:
             pass
         
@@ -79,12 +91,25 @@ for row in rows:
         except:
             pass
 
+        # ***
+        # no further information (although geo info) about tree: is this a valid tree? -> skip
+        # or: weed out duplicates
+        tree_id = f'{row["PFLEGEOBJE"]}_{row["Objekttyp"]}_{row["Bezirk"]}_{row["Baum-Nr."]}'
+        if tree_id == "0_0_0_" or (age_in_2017 == 0 and bole_radius == 0) or row["Gattung"] == "":
+            continue
+        if tree_id in tree_id_written:
+            continue
+
+        tree_id_written.append(tree_id)
+        #
+        # ***
+        
         tmp = {
-            "tree_id": f'{row["PFLEGEOBJE"]}_{row["Objekttyp"]}_{row["Bezirk"]}_{row["Baum-Nr."]}',
+            "tree_id": tree_id,
             "base_info":
             {
                 "maintenance_object": row["PFLEGEOBJE"],
-                "object_type": row["Objekttyp"],
+                "object_type": object_type,
                 "district_number": row["Bezirk"],
                 "tree_nr": row["Baum-Nr."],
             },
@@ -92,8 +117,8 @@ for row in rows:
             {
                 "lat": lat,
                 "lng": lng,
-                "geo_x": x,
-                "geo_y": y,
+                # "geo_x": x,  # ignore
+                # "geo_y": y,
                 "neighbourhood": neighbourhood,
                 "suburb": suburb,
                 "city_district": city_district,
@@ -119,6 +144,7 @@ for row in rows:
 
 print(f"count_err {count_err}")
 print(f"num lines {len(lines)}")
+
 with open("trees_cologne_2017.jsonl", "w") as f:
     for line in lines:
         f.write(f"{json.dumps(line, ensure_ascii=False)}\n")
