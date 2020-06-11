@@ -1,4 +1,4 @@
-# cologne-treemap
+# cologne-trees-REST-API
 An API to request information about city trees in Cologne, Germany.
 
 #### Beware
