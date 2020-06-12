@@ -1,16 +1,36 @@
 {
-    "1": "NN",
-    "2": "Kleingarten",
-    "3": "Sportplatz",
-    "4": "Kinderspielplatz",
-    "5": "Gebäude/Schule/Heim",
-    "6": "Straße/Platz",
-    "7": "Grünanlage",
-    "8": "Friedhof",
-    "9": "Biotopflächen",
-    "10": "Fluss/Bach",
-    "11": "Sonderanlage",
-    "12": "Forst",
-    "13": "Ausgleichsfläche",
-    "14": "Unbekannt"
+    "de":
+    {
+        "1": "NN",
+        "2": "Kleingarten",
+        "3": "Sportplatz",
+        "4": "Kinderspielplatz",
+        "5": "Gebäude/Schule/Heim",
+        "6": "Straße/Platz",
+        "7": "Grünanlage",
+        "8": "Friedhof",
+        "9": "Biotopflächen",
+        "10": "Fluss/Bach",
+        "11": "Sonderanlage",
+        "12": "Forst",
+        "13": "Ausgleichsfläche",
+        "14": "Unbekannt"
+    },
+    "en":
+    {
+        "1": "unknown",
+        "2": "allotment garden",
+        "3": "sports field",
+        "4": "playground",
+        "5": "building/school/dormitory (home) building",
+        "6": "street/court (plaza)",
+        "7": "green space",
+        "8": "cemetery",
+        "9": "biotope area",
+        "10": "river/creek",
+        "11": "special facility",
+        "12": "forest",
+        "13": "compensatory area",
+        "14": "unknown"
+    }
 }

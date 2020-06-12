@@ -12,3 +12,6 @@ __pycache__/
 
 # data
 Bestand_Einzelbaeume_Koeln_0.csv
+raw_trees_cologne_2017.jsonl
+trees_cologne_2017.jsonl
+close_tree_pairs_distance.jsonl

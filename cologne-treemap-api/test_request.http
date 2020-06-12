@@ -1,9 +1,9 @@
-POST http://localhost:8082
+POST http://localhost:8080
 Content-Type: application/json
 
 {
     "jsonrpc": "2.0",
     "id": 12345,
     "method": "tree.geo.name_german.suburb.numbers",
-    "params": {"name": "Linde"}
+    "params": {"name": "Birke"}
 }
