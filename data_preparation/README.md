@@ -9,7 +9,9 @@ Use:
 - lat_lng_districts.json
 
 Saved in: 
-- trees_cologne_2017.jsonl (json line file with 116276 lines == trees) 
+- trees_cologne_2017.jsonl (json line file with 115836 lines == trees) 
+
+Default value if no data for attribute available: **null**
 
 Generates one object per tree
 ```
@@ -43,26 +45,29 @@ Generates one object per tree
     "bole_radius": from column "STAMMBIS"
     "year_sprout": when the tree came into existence (based on "AlterSchätzung")
     "age_in_2017": from column "AlterSchätzung"
+    "age_in_2020": calculated from from column "AlterSchätzung"
+    "age_group_2020": calculated from from column "AlterSchätzung"
   }
 }
 ```
 
-Example
+## Example
 ```
 {
-  "tree_id": "4385eae9-5a95-4367-899c-36d5258ec83f",
-  "base_info_completeness": 4,
-  "tree_info_completeness": 5,
+  "tree_id": "98280430-558b-4c74-bd2e-dabab15fc60c",
+  "base_info_completeness": 5,
   "tree_taxonomy_completeness": 3,
+  "tree_info_completeness": 7,
   "base_info": {
     "maintenance_object": 900,
     "object_type": "street/court (plaza)",
     "district_number": 9,
-    "tree_nr": "20U"
+    "district_name": "Mülheim",
+    "tree_nr": "21U"
   },
   "geo_info": {
-    "lat": 50.9503953735877,
-    "lng": 7.009566429621571,
+    "lat": 50.95045949638997,
+    "lng": 7.00963487885997,
     "neighbourhood": null,
     "suburb": "Buchforst",
     "city_district": "Mülheim"
@@ -76,11 +81,13 @@ Example
     ]
   },
   "tree_info": {
-    "height": 12,
-    "treetop_radius": 10,
-    "bole_radius": 40,
-    "year_sprout": 1987,
-    "age_in_2017": 30
+    "height": 9,
+    "treetop_radius": 5,
+    "bole_radius": 20,
+    "year_sprout": 2007,
+    "age_in_2017": 10,
+    "age_in_2020": 13,
+    "age_group_2020": 1
   }
 }
 ```
