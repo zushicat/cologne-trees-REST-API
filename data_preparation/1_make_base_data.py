@@ -19,6 +19,9 @@ with open("Bestand_Einzelbaeume_Koeln_0.csv") as f:
 with open("lat_lng_districts.json") as f:
     lat_lng_districts = json.load(f)
 
+with open("cologne_districts_by_id.json") as f:
+    cologne_districts_by_id = json.load(f)
+
 with open("object_types.json") as f:
     object_types = json.load(f)
 
@@ -75,7 +78,9 @@ for row in rows:
             pass
         
         age_in_2017 = None
+        age_in_2020 = None
         year_sprout = None
+        age_group = None
 
         neighbourhood = None
         suburb = None
@@ -87,6 +92,17 @@ for row in rows:
                 year_sprout = 2017 - age_in_2017
         except:
             pass
+
+        try:
+            age_in_2020 = 2020 - year_sprout
+            for j, group in enumerate([(1,6), (6,16), (16,40), (40,1000)]):
+                lower_boundary = group[0]
+                upper_boundary = group[1]
+                if age_in_2020 >= lower_boundary and age_in_2020 < upper_boundary:
+                    age_group = j
+                    break
+        except:
+            pass
         
         try:
             lat_lng = f'{"{0:.3f}".format(lat)}_{"{0:.3f}".format(lng)}'
@@ -94,6 +110,15 @@ for row in rows:
                 neighbourhood = lat_lng_districts[lat_lng]["neighbourhood"]
                 suburb = lat_lng_districts[lat_lng]["suburb"]
                 city_district = lat_lng_districts[lat_lng]["city_district"]
+        except:
+            pass
+
+        district_number = None
+        district_name = None
+
+        try:
+            district_number = int(row["Bezirk"]) if int(row["Bezirk"]) != 0 else None
+            district_name = cologne_districts_by_id[str(district_number)]
         except:
             pass
 
@@ -119,7 +144,8 @@ for row in rows:
             {
                 "maintenance_object": int(row["PFLEGEOBJE"]) if int(row["PFLEGEOBJE"]) != 0 else None,
                 "object_type": object_type,
-                "district_number": int(row["Bezirk"]) if int(row["Bezirk"]) != 0 else None,
+                "district_number": district_number,
+                "district_name": district_name,
                 "tree_nr": row["Baum-Nr."] if len(row["Baum-Nr."]) > 0 else None,
             },
             "geo_info":
@@ -144,6 +170,8 @@ for row in rows:
                 "bole_radius": bole_radius,
                 "year_sprout": year_sprout,
                 "age_in_2017": age_in_2017,
+                "age_in_2020": age_in_2020,
+                "age_group_2020": age_group,
             }
         }
 
