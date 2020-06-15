@@ -7,6 +7,13 @@ with open("close_tree_pairs_distance.jsonl") as f:
 with open("raw_trees_cologne_2017.jsonl") as f:
     tree_list: List[str] = f.read().split("\n")
 
+with open("cologne_districts_by_id.json") as f:
+    district_id_name: Dict[str, str] = json.load(f)
+
+# ***
+# re-arrange
+district_name_id = {v: k for k, v in district_id_name.items()}
+
 # ***
 # 
 trees_by_id: Dict[str, Any] = {}
@@ -15,6 +22,15 @@ for line in tree_list:
         tree_data: Dict[str, Any] = json.loads(line)
     except:
         continue
+    # ***
+    # check for base_info.district_number, base_info.district_name
+    # if None: substitute by derived id and value from geo_info.city_district
+    if tree_data["base_info"]["district_number"] is None:
+        pred_district_name = tree_data["geo_info"]["city_district"]
+        if district_name_id.get(pred_district_name) is not None:
+            tree_data["base_info"]["district_number"] = district_name_id[pred_district_name]
+            tree_data["base_info"]["district_name"] = pred_district_name
+
     trees_by_id[tree_data["tree_id"]] = tree_data
 
 # ***
@@ -52,6 +68,7 @@ for line in neighbour_pair_list:
 # remove identified ids
 for del_id in set(delete_ids):
     del trees_by_id[del_id]
+
 
 # write cleaned file
 with open("trees_cologne_2017.jsonl", "w") as f:  # overwrite old data
