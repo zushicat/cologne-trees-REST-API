@@ -17,9 +17,9 @@ Generates one object per tree
 ```
 {
   "tree_id": generated uuid id,
-  "base_info_completeness": number of non-None "base_info" values,
-  "tree_info_completeness": number of non-None "tree_info" values,
-  "tree_taxonomy_completeness": number of non-None "tree_taxonomy" values,
+  "base_info_completeness": number of non-None "base_info" values (in %),
+  "tree_info_completeness": number of non-None "tree_info" values (in %),
+  "tree_taxonomy_completeness": number of non-None "tree_taxonomy" values (in %),
   "base_info": {
     "maintenance_object": from column "PFLEGEOBJE"
         "object_type": from column "Objekttyp"
@@ -27,8 +27,8 @@ Generates one object per tree
         "tree_nr": from column "Baum-Nr."
   },
   "geo_info": {
-    "lat": lat from "X_Koordina"
-    "lng": lng from "Y_Koordina"
+    "lat": lat from column "X_Koordina"
+    "lng": lng from column "Y_Koordina"
     "neighbourhood": matched neighbourhood from geo data
     "suburb": matched suburb from geo data
     "city_district": matched city_district from geo data
@@ -54,23 +54,23 @@ Generates one object per tree
 ## Example
 ```
 {
-  "tree_id": "98280430-558b-4c74-bd2e-dabab15fc60c",
-  "base_info_completeness": 5,
-  "tree_taxonomy_completeness": 3,
-  "tree_info_completeness": 7,
+  "tree_id": "e2281aa9-5bcd-474d-96eb-f64144c596f0",
+  "base_info_completeness": 1,
+  "tree_taxonomy_completeness": 0.75,
+  "tree_info_completeness": 1,
   "base_info": {
-    "maintenance_object": 900,
+    "maintenance_object": 1009,
     "object_type": "street/court (plaza)",
-    "district_number": 9,
-    "district_name": "Mülheim",
-    "tree_nr": "21U"
+    "district_number": 1,
+    "district_name": "Innenstadt",
+    "tree_nr": "MG58"
   },
   "geo_info": {
-    "lat": 50.95045949638997,
-    "lng": 7.00963487885997,
+    "lat": 50.91734830820297,
+    "lng": 6.964993084894649,
     "neighbourhood": null,
-    "suburb": "Buchforst",
-    "city_district": "Mülheim"
+    "suburb": "Neustadt/Süd",
+    "city_district": "Innenstadt"
   },
   "tree_taxonomy": {
     "genus": "Robinia",
@@ -82,8 +82,8 @@ Generates one object per tree
   },
   "tree_info": {
     "height": 9,
-    "treetop_radius": 5,
-    "bole_radius": 20,
+    "treetop_radius": 4,
+    "bole_radius": 15,
     "year_sprout": 2007,
     "age_in_2017": 10,
     "age_in_2020": 13,
