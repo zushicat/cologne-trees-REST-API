@@ -137,9 +137,9 @@ for row in rows:
         
         tmp = {
             "tree_id": tree_id,
-            "base_info_completeness": 0,
-            "tree_taxonomy_completeness": 0,
-            "tree_info_completeness": 0,
+            "base_info_completeness": 0.0,
+            "tree_taxonomy_completeness": 0.0,
+            "tree_info_completeness": 0.0,
             "base_info":
             {
                 "maintenance_object": int(row["PFLEGEOBJE"]) if int(row["PFLEGEOBJE"]) != 0 else None,
@@ -176,9 +176,9 @@ for row in rows:
         }
 
         # ***
-        # check completeness in "base_info" and "tree_info"
+        # % completeness in "base_info", tree_taxonomy and "tree_info"
         for k in ["base_info", "tree_taxonomy", "tree_info"]:
-            collected_types_len = len([type(x).__name__ for x in tmp[k].values() if type(x).__name__ != "NoneType"])  # ["NoneType", "str", "int", "str"]
+            collected_types_len = round(len([type(x).__name__ for x in tmp[k].values() if type(x).__name__ != "NoneType"]) / len(tmp[k].values()), 2)  # i.e. ["NoneType", "str", "int", "str"]
             tmp[f"{k}_completeness"] = collected_types_len
 
         lines.append(tmp)
