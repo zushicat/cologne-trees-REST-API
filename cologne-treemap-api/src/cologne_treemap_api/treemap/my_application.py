@@ -56,7 +56,7 @@ def geo_genus_numbers_by_suburb_number(suburb_number: str = None) -> Dict[str, A
     try:
         return get_geo_genus_numbers_by_suburb_number(TREEDATA, suburb_number)
     except Exception as e:
-        return {"status": f"ERROR! {e}"}
+       return {"status": f"ERROR! {e}"}
 
 
 def geo_age_by_suburb_number(
@@ -107,6 +107,6 @@ def tree_geo_name_german_suburb_numbers(
     name: str = None
 ) -> Dict[str, Any]:
     try:
-        return get_tree_geo_name_german_suburb_numbers(TREEDATA, name)
+       return get_tree_geo_name_german_suburb_numbers(TREEDATA, name)
     except Exception as e:
-        return {"status": f"ERROR! {e}"}
+       return {"status": f"ERROR! {e}"}

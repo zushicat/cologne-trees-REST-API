@@ -29,7 +29,7 @@ def get_geo_numbers_by_district_number(
         requested_districts = [
             x.strip() for x in district_numbers.split(",") if x.strip().isdigit()
         ]
-
+    
     # ***
     # process trees of requested (or all) districts
     numbers_by_district = {}
@@ -49,20 +49,20 @@ def get_geo_numbers_by_district_number(
 
     for tree in treemap:
         try:
-            district_number = tree["base_info"]["district_number"]
-
+            district_number = str(tree["base_info"]["district_number"])
+            
             if district_number not in requested_districts:
                 continue
 
             district = tree["geo_info"]["city_district"]
             suburb = tree["geo_info"]["suburb"]
             neighbourhood = tree["geo_info"]["neighbourhood"]
-
+            
             if district is None:  # about 80 trees: they do have lat, lng
                 # debug
                 # print(tree["base_info"]["district_number"], tree["geo_info"]["lat"], tree["geo_info"]["lng"])
                 continue
-
+            
             # ***
             # ignore suburbs that do not belong officially to district
             if (
@@ -70,7 +70,7 @@ def get_geo_numbers_by_district_number(
                 not in suburb_numbers[district_number]
             ):
                 continue
-
+            
             # ***
             # since there are some peripheral districts in district number:
             # collect numbers to filter out max later
@@ -90,7 +90,7 @@ def get_geo_numbers_by_district_number(
                 }
 
             numbers_by_district[district_number]["number_of_trees"] += 1
-
+            
             if district is not None:
                 if (
                     numbers_by_district[district_number]["districts"].get(district)
@@ -235,7 +235,7 @@ def get_geo_genus_numbers_by_suburb_number(
     for district_number, suburb_vals in SUBURBNUMBERS.items():
         for s_number, suburb in suburb_vals.items():
             suburb_numbers[s_number] = suburb
-
+    
     # ***
     # only valid suburb number
     if suburb_number not in suburb_numbers.keys():
@@ -256,10 +256,10 @@ def get_geo_genus_numbers_by_suburb_number(
             suburb = tree["geo_info"]["suburb"]
             neighbourhood = tree["geo_info"]["neighbourhood"]
 
-            genus = tree["tree_info"]["genus"]
-            if genus in ["", "unbekannt"]:
+            genus = tree["tree_taxonomy"]["genus"]
+            if genus in ["", "unbekannt", None]:
                 genus = "unknown"
-            name_german = tree["tree_info"]["name_german"]
+            name_german = tree["tree_taxonomy"]["name_german"]
 
             if district is None:  # about 80 trees: they do have lat, lng
                 continue
@@ -342,10 +342,10 @@ def get_geo_age_by_suburb_number(
             suburb = tree["geo_info"]["suburb"]
             neighbourhood = tree["geo_info"]["neighbourhood"]
 
-            genus = tree["tree_info"]["genus"]
-            if genus in ["", "unbekannt"]:
+            genus = tree["tree_taxonomy"]["genus"]
+            if genus in ["", "unbekannt", None]:
                 genus = "unknown"
-            name_german = tree["tree_info"]["name_german"]
+            name_german = tree["tree_taxonomy"]["name_german"]
 
             year_sprout = tree["tree_info"]["year_sprout"]
             age = current_year - year_sprout
