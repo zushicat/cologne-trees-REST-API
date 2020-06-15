@@ -11,6 +11,7 @@ __pycache__/
 .vscode/
 
 Pipfile.lock
+.ipynb_checkpoints
 
 # data
 Bestand_Einzelbaeume_Koeln_0.csv
