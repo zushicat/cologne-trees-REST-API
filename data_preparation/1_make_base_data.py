@@ -137,6 +137,7 @@ for row in rows:
         
         tmp = {
             "tree_id": tree_id,
+            "dataset_completeness": 0.0,
             "base_info_completeness": 0.0,
             "tree_taxonomy_completeness": 0.0,
             "tree_info_completeness": 0.0,
@@ -175,11 +176,21 @@ for row in rows:
             }
         }
 
-        # ***
+        # ********
         # % completeness in "base_info", tree_taxonomy and "tree_info"
-        for k in ["base_info", "tree_taxonomy", "tree_info"]:
-            collected_types_len = round(len([type(x).__name__ for x in tmp[k].values() if type(x).__name__ != "NoneType"]) / len(tmp[k].values()), 2)  # i.e. ["NoneType", "str", "int", "str"]
-            tmp[f"{k}_completeness"] = collected_types_len
+        # and overall completeness in "dataset_completeness"
+        tmp_completeness_collected = 0.0
+        tmp_completeness_attr = ["base_info", "tree_taxonomy", "tree_info"]
+        for k in tmp_completeness_attr:
+            collected_types_perc = round(len([type(x).__name__ for x in tmp[k].values() if type(x).__name__ != "NoneType"]) / len(tmp[k].values()), 2)  # i.e. ["NoneType", "str", "int", "str"]
+            tmp[f"{k}_completeness"] = collected_types_perc
+            tmp_completeness_collected += collected_types_perc
+
+        try:
+            tmp_completeness_collected = round(tmp_completeness_collected / len(tmp_completeness_attr), 2)
+        except:
+            pass
+        tmp["dataset_completeness"] = tmp_completeness_collected
 
         lines.append(tmp)
     except Exception as e:
