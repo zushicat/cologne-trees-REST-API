@@ -140,6 +140,7 @@ Returns age of trees in suburb and according number of planted trees, sorted eit
 - "params": {"sort_by": "age"} OR "params": {"sort_by": "number"}
 
 Returns age of trees and according number of planted trees, sorted either by age or by number
+(-1 indicated unknown age.)
 
 #### tree.attr.genus.numbers
 - "params": {"sort_by": "genus"} OR "params": {"sort_by": "number"}
