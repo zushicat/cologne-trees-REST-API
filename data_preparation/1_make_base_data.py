@@ -122,6 +122,11 @@ for row in rows:
         except:
             pass
 
+        taxo_genus = row["Gattung"] if len(row["Gattung"]) > 0 and row["Gattung"] != "unbekannt" else None
+        taxo_species = row["Art"] if len(row["Art"]) > 0 and row["Art"] != "unbekannt" else None
+        taxo_type = row["Sorte"] if len(row["Sorte"]) > 0 and row["Sorte"] != "unbekannt" else None
+        taxo_name_german = [x.strip() for x in row["DeutscherN"].split(",")] if len(row["DeutscherN"]) > 0 and row["DeutscherN"] != "unbekannt" else None
+
         # ***
         # no further information (although geo info) about tree: is this a valid tree? -> skip
         # or: weed out duplicates
@@ -159,10 +164,10 @@ for row in rows:
             },
             "tree_taxonomy":
             {
-                "genus": row["Gattung"] if len(row["Gattung"]) > 0 else None,
-                "species": row["Art"] if len(row["Art"]) > 0 else None,
-                "type": row["Sorte"] if len(row["Sorte"]) > 0 else None,
-                "name_german": [x.strip() for x in row["DeutscherN"].split(",")] if len(row["DeutscherN"]) > 0 else None,
+                "genus": taxo_genus,
+                "species": taxo_species,
+                "type": taxo_type,
+                "name_german": taxo_name_german,
             },
             "tree_info":
             {
