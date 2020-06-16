@@ -24,7 +24,8 @@ Generates one object per tree
   "base_info": {
       "maintenance_object": from column "PFLEGEOBJE"
       "object_type": from column "Objekttyp"
-      "district_number": from column "Bezirk" (ref. numbers 1-9: https://de.wikipedia.org/wiki/Liste_der_Stadtbezirke_und_Stadtteile_K%C3%B6lns)
+      "district_number": from column "Bezirk" (ref. numbers 1-9: https://de.wikipedia.org/wiki/Liste_der_Stadtbezirke_und_Stadtteile_K%C3%B6lns) (1)
+      "district_name": derived from base_info.district_number,
       "tree_nr": from column "Baum-Nr."
   },
   "geo_info": {
@@ -51,6 +52,9 @@ Generates one object per tree
   }
 }
 ```
+
+## Some remarks
+1 - out of 115836 trees (with valid geo information) 89793 have assigned district numbers in the original dataset "Baumkataster". If missing these features are substituted by data derived from geo_info.city_district (from geo location match).
 
 ## Example
 ```
