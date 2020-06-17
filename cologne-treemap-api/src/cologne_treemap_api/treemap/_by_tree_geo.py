@@ -18,7 +18,10 @@ def get_tree_geo_name_german_suburb_numbers(
     numbers_by_name = {"name_german": name, "suburbs": {}}
     for tree in treemap:
         try:
-            names_german = tree["tree_info"]["name_german"]
+            names_german = tree["tree_taxonomy"]["name_german"]
+            if names_german is None:
+                continue
+
             suburb = tree["geo_info"]["suburb"]
             
             name_found = False
@@ -37,6 +40,5 @@ def get_tree_geo_name_german_suburb_numbers(
                 numbers_by_name["suburbs"][suburb] = 0
             numbers_by_name["suburbs"][suburb] += 1
         except Exception as e:
-            print(e)
             continue
     return numbers_by_name

@@ -122,6 +122,11 @@ for row in rows:
         except:
             pass
 
+        taxo_genus = row["Gattung"] if len(row["Gattung"]) > 0 and row["Gattung"] != "unbekannt" else None
+        taxo_species = row["Art"] if len(row["Art"]) > 0 and row["Art"] != "unbekannt" else None
+        taxo_type = row["Sorte"] if len(row["Sorte"]) > 0 and row["Sorte"] != "unbekannt" else None
+        taxo_name_german = [x.strip() for x in row["DeutscherN"].split(",")] if len(row["DeutscherN"]) > 0 and row["DeutscherN"] != "unbekannt" else None
+
         # ***
         # no further information (although geo info) about tree: is this a valid tree? -> skip
         # or: weed out duplicates
@@ -137,9 +142,10 @@ for row in rows:
         
         tmp = {
             "tree_id": tree_id,
-            "base_info_completeness": 0,
-            "tree_taxonomy_completeness": 0,
-            "tree_info_completeness": 0,
+            "dataset_completeness": 0.0,
+            "base_info_completeness": 0.0,
+            "tree_taxonomy_completeness": 0.0,
+            "tree_info_completeness": 0.0,
             "base_info":
             {
                 "maintenance_object": int(row["PFLEGEOBJE"]) if int(row["PFLEGEOBJE"]) != 0 else None,
@@ -158,10 +164,10 @@ for row in rows:
             },
             "tree_taxonomy":
             {
-                "genus": row["Gattung"] if len(row["Gattung"]) > 0 else None,
-                "species": row["Art"] if len(row["Art"]) > 0 else None,
-                "type": row["Sorte"] if len(row["Sorte"]) > 0 else None,
-                "name_german": [x.strip() for x in row["DeutscherN"].split(",")] if len(row["DeutscherN"]) > 0 else None,
+                "genus": taxo_genus,
+                "species": taxo_species,
+                "type": taxo_type,
+                "name_german": taxo_name_german,
             },
             "tree_info":
             {
@@ -175,11 +181,21 @@ for row in rows:
             }
         }
 
-        # ***
-        # check completeness in "base_info" and "tree_info"
-        for k in ["base_info", "tree_taxonomy", "tree_info"]:
-            collected_types_len = len([type(x).__name__ for x in tmp[k].values() if type(x).__name__ != "NoneType"])  # ["NoneType", "str", "int", "str"]
-            tmp[f"{k}_completeness"] = collected_types_len
+        # ********
+        # % completeness in "base_info", tree_taxonomy and "tree_info"
+        # and overall completeness in "dataset_completeness"
+        tmp_completeness_collected = 0.0
+        tmp_completeness_attr = ["base_info", "tree_taxonomy", "tree_info"]
+        for k in tmp_completeness_attr:
+            collected_types_perc = round(len([type(x).__name__ for x in tmp[k].values() if type(x).__name__ != "NoneType"]) / len(tmp[k].values()), 2)  # i.e. ["NoneType", "str", "int", "str"]
+            tmp[f"{k}_completeness"] = collected_types_perc
+            tmp_completeness_collected += collected_types_perc
+
+        try:
+            tmp_completeness_collected = round(tmp_completeness_collected / len(tmp_completeness_attr), 2)
+        except:
+            pass
+        tmp["dataset_completeness"] = tmp_completeness_collected
 
         lines.append(tmp)
     except Exception as e:

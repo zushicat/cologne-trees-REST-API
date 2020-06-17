@@ -10,6 +10,10 @@ __pycache__/
 # Visual Studio Code
 .vscode/
 
+Pipfile.lock
+.ipynb_checkpoints
+_regression_tests.py
+
 # data
 Bestand_Einzelbaeume_Koeln_0.csv
 raw_trees_cologne_2017.jsonl

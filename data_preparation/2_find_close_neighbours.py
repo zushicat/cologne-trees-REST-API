@@ -6,34 +6,76 @@ Try to find duplicates by lat/lng data
 ----
 Incoming lines:
 {
-  "tree_id": "afbb8c02-ff2e-4ff7-b9ba-d516bd279848",
+  "tree_id": "e2281aa9-5bcd-474d-96eb-f64144c596f0",
+  "base_info_completeness": 1,
+  "tree_taxonomy_completeness": 0.75,
+  "tree_info_completeness": 1,
   "base_info": {
-    "maintenance_object": "1207",
+    "maintenance_object": 1009,
     "object_type": "street/court (plaza)",
-    "district_number": "9",
-    "tree_nr": "6G"
+    "district_number": 1,
+    "district_name": "Innenstadt",
+    "tree_nr": "MG58"
   },
   "geo_info": {
-    "lat": 51.002169444266436,
-    "lng": 6.979570594535556,
+    "lat": 50.91734830820297,
+    "lng": 6.964993084894649,
     "neighbourhood": null,
-    "suburb": "Flittard",
-    "city_district": "Mülheim"
+    "suburb": "Neustadt/Süd",
+    "city_district": "Innenstadt"
   },
-  "tree_info": {
-    "genus": "Sorbus",
-    "species": null,
+  "tree_taxonomy": {
+    "genus": "Robinia",
+    "species": "pseudoacacia",
     "type": null,
     "name_german": [
-      "Eberesche",
-      "Mehlbeere",
-      "Vogelbeerbaum"
-    ],
-    "height": 6,
-    "treetop_radius": 1,
-    "bole_radius": 5,
-    "year_sprout": null,
-    "age_in_2017": 0
+      "Scheinakazie"
+    ]
+  },
+  "tree_info": {
+    "height": 9,
+    "treetop_radius": 4,
+    "bole_radius": 15,
+    "year_sprout": 2007,
+    "age_in_2017": 10,
+    "age_in_2020": 13,
+    "age_group_2020": 1
+  }
+}{
+  "tree_id": "e2281aa9-5bcd-474d-96eb-f64144c596f0",
+  "base_info_completeness": 1,
+  "tree_taxonomy_completeness": 0.75,
+  "tree_info_completeness": 1,
+  "base_info": {
+    "maintenance_object": 1009,
+    "object_type": "street/court (plaza)",
+    "district_number": 1,
+    "district_name": "Innenstadt",
+    "tree_nr": "MG58"
+  },
+  "geo_info": {
+    "lat": 50.91734830820297,
+    "lng": 6.964993084894649,
+    "neighbourhood": null,
+    "suburb": "Neustadt/Süd",
+    "city_district": "Innenstadt"
+  },
+  "tree_taxonomy": {
+    "genus": "Robinia",
+    "species": "pseudoacacia",
+    "type": null,
+    "name_german": [
+      "Scheinakazie"
+    ]
+  },
+  "tree_info": {
+    "height": 9,
+    "treetop_radius": 4,
+    "bole_radius": 15,
+    "year_sprout": 2007,
+    "age_in_2017": 10,
+    "age_in_2020": 13,
+    "age_group_2020": 1
   }
 }
 '''

@@ -10,8 +10,11 @@ def get_tree_attr_age_numbers(
     current_year = int(datetime.datetime.today().year)
     numbers_by_year = {}
     for tree in treemap:
-        year_sprout = int(tree["tree_info"]["year_sprout"])
-        age = current_year - year_sprout
+        year_sprout = tree["tree_info"]["year_sprout"]
+        if year_sprout is not None:
+            age = current_year - year_sprout
+        else:
+            age = -1
 
         if numbers_by_year.get(age) is None:
             numbers_by_year[age] = 0
@@ -33,8 +36,8 @@ def get_tree_attr_genus_numbers(
 ) -> Dict[str, Any]:
     numbers_by_genus = {}
     for tree in treemap:
-        genus = tree["tree_info"]["genus"]
-        if genus in ["", "unbekannt"]:
+        genus = tree["tree_taxonomy"]["genus"]
+        if genus in ["", "unbekannt", None]:
             genus = "unknown"
 
         if numbers_by_genus.get(genus) is None:
@@ -56,10 +59,13 @@ def get_tree_attr_name_german_numbers(
 ) -> Dict[str, Any]:
     numbers_by_name_german = {}
     for tree in treemap:
-        names_german = tree["tree_info"]["name_german"]
+        names_german = tree["tree_taxonomy"]["name_german"]
 
+        if names_german is None:
+            names_german = [None]
+        
         for name_german in names_german:
-            if name_german in ["", "unbekannt"]:
+            if name_german in ["", "unbekannt", None]:
                 name_german = "unknown"
 
             if numbers_by_name_german.get(name_german) is None:
