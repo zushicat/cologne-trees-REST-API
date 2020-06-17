@@ -12,6 +12,7 @@ __pycache__/
 
 Pipfile.lock
 .ipynb_checkpoints
+_regression_tests.py
 
 # data
 Bestand_Einzelbaeume_Koeln_0.csv
