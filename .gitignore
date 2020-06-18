@@ -18,5 +18,6 @@ _regression_tests.py
 Bestand_Einzelbaeume_Koeln_0.csv
 20200610_Baumbestand_Koeln.csv
 raw_trees_cologne_2017.jsonl
+raw_trees_cologne_2020.jsonl
 trees_cologne_2017.jsonl
 close_tree_pairs_distance.jsonl
