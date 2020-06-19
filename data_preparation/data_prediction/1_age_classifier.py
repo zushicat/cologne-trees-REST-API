@@ -29,8 +29,14 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 #
 # *******************************************************
 def _load_data() -> pd.DataFrame:
-    columns = ["id", "bole_radius", "age", "age_group_2020", "genus"]
+    columns = ["id", "bole_radius", "age", "age_group_2020", "genus"]  # , "type"]
     df = pd.read_csv("data/measures_age_taxonomy.csv", usecols=columns)
+    
+    # seemingly no significant difference between genus only or genus + type
+    # to be further investigated
+    # df["genus"] = df.apply(lambda x: None if pd.isnull(x.genus) and pd.isnull(x.type) else f"{x.genus}_{x.type}", axis=1)
+    # df.drop(["type"], axis=1, inplace=True)
+
     return df
 
 
@@ -123,12 +129,12 @@ def _evaluate_train_test(df: pd.DataFrame, num_classes: int, y_col_name: str) ->
 # *******************************************************
 if __name__ == "__main__":
     df = _load_data()
-
+    
     label_encoder = LabelEncoder()
     df["encoded_genus"] = label_encoder.fit_transform(df["genus"].astype(str))
     
     df_has_all, df_has_no_age, df_has_none = _split_data_train_pred(df)
-    # print(len(df_has_all), len(df_has_no_age), len(df_has_none))
+    print(len(df_has_all), len(df_has_no_age), len(df_has_none))
 
     # ***
     # scale values of bole_radius

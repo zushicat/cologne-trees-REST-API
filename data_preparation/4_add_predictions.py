@@ -9,8 +9,8 @@ def _get_compressed_tree_data() -> List[str]:
     '''
     Load compressed file.
     '''
-    tar = tarfile.open("../cologne-treemap-api/data/trees_cologne_2017.jsonl.tar.gz") #, mode='rb:gz')
-    f = tar.extractfile("trees_cologne_2017.jsonl")
+    tar = tarfile.open("../cologne-treemap-api/data/trees_cologne_merged.jsonl.tar.gz") #, mode='rb:gz')
+    f = tar.extractfile("trees_cologne_merged.jsonl")
     lines = f.read().decode().split("\n")
     
     return lines
@@ -24,18 +24,35 @@ if __name__ == "__main__":
     lines: List[Dict[str, Any]] = []
     for line in tree_data_str:
         try:
-            tree = json.loads(line)
+            tree_data = json.loads(line)
         except:
             continue
 
-        tree_id = tree["tree_id"]
+        if tree_data.get("predictions") is None:
+            tree_data["predictions"]: Dict[str, Any] = {}
+
+        tree_id = tree_data["tree_id"]
         tree_prediction_list = df_predictions_age.loc[df_predictions_age['tree_id'] == tree_id]
         
         if len(tree_prediction_list) == 0:
+            lines.append(tree_data)
             continue
 
         current_prediction = tree_prediction_list.iloc[0]
         
-        print(current_prediction["age_group_2020"], current_prediction["probabiliy"])
+        # print(current_prediction["age_group_2020"], current_prediction["probabiliy"])
+        tree_data["predictions"]["age_prediction"] = {
+            "age_group_2020": int(current_prediction["age_group_2020"]),
+            "probabiliy_age_group_2020": float(current_prediction["probabiliy"])
+        }
 
-        break
+        lines.append(tree_data)
+
+    # write cleaned file
+    with open("trees_cologne_merged.jsonl", "w") as f:  # overwrite old data
+        for line in lines:
+            f.write(f"{json.dumps(line, ensure_ascii=False)}\n")
+
+    # write compressed tar.gz file in docker data directory
+    tar = tarfile.open("../cologne-treemap-api/data/trees_cologne_merged.jsonl.tar.gz","w:gz")
+    tar.add("trees_cologne_merged.jsonl")

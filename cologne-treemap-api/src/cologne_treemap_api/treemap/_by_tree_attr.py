@@ -10,7 +10,7 @@ def get_tree_attr_age_numbers(
     current_year = int(datetime.datetime.today().year)
     numbers_by_year = {}
     for tree in treemap:
-        year_sprout = tree["tree_info"]["year_sprout"]
+        year_sprout = tree["tree_age"]["year_sprout"]
         if year_sprout is not None:
             age = current_year - year_sprout
         else:
