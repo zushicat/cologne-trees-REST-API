@@ -347,7 +347,7 @@ def get_geo_age_by_suburb_number(
                 genus = "unknown"
             name_german = tree["tree_taxonomy"]["name_german"]
 
-            year_sprout = tree["tree_info"]["year_sprout"]
+            year_sprout = tree["tree_age"]["year_sprout"]
             age = current_year - year_sprout
 
             if district is None:  # about 80 trees: they do have lat, lng

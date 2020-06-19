@@ -15,7 +15,7 @@ COPY . .
 RUN cd /app/data && \
     mkdir /data && \
     tar -xzf trees_cologne_2017.jsonl.tar.gz  && \
-    mv trees_cologne_2017.jsonl /data/trees_cologne_2017.jsonl
+    mv trees_cologne_merged.jsonl /data/trees_cologne_merged.jsonl
     
 
 EXPOSE 80

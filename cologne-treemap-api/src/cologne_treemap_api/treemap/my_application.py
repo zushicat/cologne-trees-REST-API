@@ -25,7 +25,7 @@ TREEDATA = []
 def load_tree_data() -> List[Dict[str, Any]]:
     global TREEDATA
     if len(TREEDATA) == 0:
-        with open(f"{DIRNAME}/trees_cologne_2017.jsonl") as f:
+        with open(f"{DIRNAME}/trees_cologne_merged.jsonl") as f:
             lines = f.read().split("\n")
         for line in lines:
             try:
