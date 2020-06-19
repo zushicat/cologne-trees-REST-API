@@ -14,11 +14,19 @@ Pipfile.lock
 .ipynb_checkpoints
 _regression_tests.py
 
-# data
+# data from Stadt Köln
 Bestand_Einzelbaeume_Koeln_0.csv
 20200610_Baumbestand_Koeln.csv
+
+# following files are tmp data while creating the final base data
 raw_trees_cologne_2017.jsonl
 raw_trees_cologne_2020.jsonl
 raw_trees_cologne_merged.jsonl
+
 trees_cologne_2017.jsonl
+trees_cologne_merged.jsonl
+
 close_tree_pairs_distance.jsonl
+all_tree_pairs_distance.jsonl
+
+neighbours_by_id.json
