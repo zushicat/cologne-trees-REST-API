@@ -106,6 +106,7 @@ def _haversine(lon1, lat1, lon2, lat2):
 
 def calculate_distance(suburb_trees):
     close_pairs = []
+    all_pairs = []  # without neighbours which are TOO close
     for i, tree_1 in enumerate(suburb_trees):
         #print(i)
         for j, tree_2 in enumerate(suburb_trees):
@@ -114,19 +115,22 @@ def calculate_distance(suburb_trees):
 
             distance = _haversine(tree_1["lng"], tree_1["lat"], tree_2["lng"], tree_2["lat"])
 
-            if distance < 3:
+            if distance > 2 and distance <= 50:
+              all_pairs.append([tree_1["id"], tree_2["id"], distance])
+            
+            if distance <= 2:
                 #print(f'   {j} - {distance}')
                 close_pairs.append([tree_1["id"], tree_2["id"], distance])
         #print()
-    return close_pairs
+    return close_pairs, all_pairs
 
 
 if __name__ == "__main__":
-    with open("raw_trees_cologne_2017.jsonl") as f:
+    with open("raw_trees_cologne_merged.jsonl") as f:
         in_lines = f.read().split("\n")
 
     trees_by_district_suburb: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
-    trees_short_list = []
+    trees_neighbours: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
 
     for i, in_line in enumerate(in_lines):
         print(i)
@@ -155,15 +159,23 @@ if __name__ == "__main__":
     # print(json.dumps(trees_by_district_suburb, indent=2))
 
     close_pairs = []
+    all_pairs = []  # without neighbours which are TOO close
     for district, suburbs in trees_by_district_suburb.items():
         print(f"---- {district} ----")
         for suburb, trees in suburbs.items():
-            close_pairs_in_suburb = calculate_distance(trees)
+            close_pairs_in_suburb, all_pairs_in_suburb = calculate_distance(trees)
             close_pairs += close_pairs_in_suburb
+            all_pairs += all_pairs_in_suburb
             print(f"   {suburb} {len(trees)} {len(close_pairs_in_suburb)}")
     
     #print(close_pairs)
     print(len(close_pairs))
+    print(len(all_pairs))
+
     with open("close_tree_pairs_distance.jsonl", "w") as f:
         for line in close_pairs:
+            f.write(f"{json.dumps(line, ensure_ascii=False)}\n")
+    
+    with open("all_tree_pairs_distance.jsonl", "w") as f:
+        for line in all_pairs:
             f.write(f"{json.dumps(line, ensure_ascii=False)}\n")
