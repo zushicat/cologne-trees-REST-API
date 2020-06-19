@@ -30,3 +30,6 @@ close_tree_pairs_distance.jsonl
 all_tree_pairs_distance.jsonl
 
 neighbours_by_id.json
+
+# measures_age_taxonomy.csv
+# predictions_age_group.csv
