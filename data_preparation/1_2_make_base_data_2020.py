@@ -84,12 +84,8 @@ for row in rows:
         except:
             pass
         
-        #age_in_2017 = None
-        #age_in_2020 = None
-        #year_sprout = None
         year_planting = None
-        #age_group = None
-
+        
         neighbourhood = None
         suburb = None
         city_district = None
@@ -97,24 +93,12 @@ for row in rows:
         try:
             if int(row["PFLANZJAH"]) > 0:
                 year_planting = int(row["PFLANZJAH"])
-                #year_sprout = 2017 - age_in_2017
         except:
             pass
 
         if year_planting is None:
             count_no_age += 1
 
-        # try:
-        #     age_in_2020 = 2020 - year_sprout
-        #     for j, group in enumerate([(1,6), (6,16), (16,40), (40,1000)]):
-        #         lower_boundary = group[0]
-        #         upper_boundary = group[1]
-        #         if age_in_2020 >= lower_boundary and age_in_2020 < upper_boundary:
-        #             age_group = j
-        #             break
-        # except:
-        #     pass
-        
         try:
             lat_lng = f'{"{0:.3f}".format(lat)}_{"{0:.3f}".format(lng)}'
             if lat_lng_districts.get(lat_lng) is not None:
@@ -214,7 +198,6 @@ for row in rows:
     
 
 print(f"count_err {count_err}")
-print(f"num lines {len(lines)}")
 print(f"count_no_age: {count_no_age}")
 print(f"count: {count}")
 
