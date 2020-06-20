@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 with open("close_tree_pairs_distance.jsonl") as f:
     close_neighbour_pair_list: List[str] = f.read().split("\n")
 
-with open("all_tree_pairs_distance.jsonl") as f:
+with open("data_prediction/data/all_tree_pairs_distance.jsonl") as f:
     all_neighbour_pair_list: List[str] = f.read().split("\n")
 
 with open("raw_trees_cologne_merged.jsonl") as f:
