@@ -29,7 +29,7 @@ if __name__ == "__main__":
             continue
 
         if tree_data.get("predictions") is None:
-            tree_data["predictions"]: Dict[str, Optional[Any]] = None
+            tree_data["predictions"]: Optional[Dict[str, Any]] = None
 
         tree_id = tree_data["tree_id"]
         tree_prediction_list = df_predictions_age.loc[df_predictions_age['tree_id'] == tree_id]
