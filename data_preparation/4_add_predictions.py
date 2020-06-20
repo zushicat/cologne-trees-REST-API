@@ -1,6 +1,6 @@
 import json
 import tarfile
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import pandas as pd
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
             continue
 
         if tree_data.get("predictions") is None:
-            tree_data["predictions"]: Dict[str, Any] = {}
+            tree_data["predictions"]: Dict[str, Optional[Any]] = None
 
         tree_id = tree_data["tree_id"]
         tree_prediction_list = df_predictions_age.loc[df_predictions_age['tree_id'] == tree_id]
@@ -40,7 +40,8 @@ if __name__ == "__main__":
 
         current_prediction = tree_prediction_list.iloc[0]
         
-        # print(current_prediction["age_group_2020"], current_prediction["probabiliy"])
+        if tree_data.get("predictions") is None:
+            tree_data["predictions"] = {}
         tree_data["predictions"]["age_prediction"] = {
             "age_group_2020": int(current_prediction["age_group_2020"]),
             "probabiliy_age_group_2020": float(current_prediction["probabiliy"])
