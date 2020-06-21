@@ -176,6 +176,6 @@ if __name__ == "__main__":
         for line in close_pairs:
             f.write(f"{json.dumps(line, ensure_ascii=False)}\n")
     
-    with open("all_tree_pairs_distance.jsonl", "w") as f:
+    with open("data_prediction/data/all_tree_pairs_distance.jsonl", "w") as f:
         for line in all_pairs:
             f.write(f"{json.dumps(line, ensure_ascii=False)}\n")

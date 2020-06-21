@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 with open("close_tree_pairs_distance.jsonl") as f:
     close_neighbour_pair_list: List[str] = f.read().split("\n")
 
-with open("all_tree_pairs_distance.jsonl") as f:
+with open("data_prediction/data/all_tree_pairs_distance.jsonl") as f:
     all_neighbour_pair_list: List[str] = f.read().split("\n")
 
 with open("raw_trees_cologne_merged.jsonl") as f:
@@ -62,7 +62,7 @@ for line in close_neighbour_pair_list:
     tree_data_2 = trees_by_id[id_2]
 
     # ***
-    # 
+    # TODO: merge information .found_in_dataset
     if tree_data_1["base_info_completeness"] > tree_data_2["base_info_completeness"]:
         if tree_data_2["tree_measures_completeness"] == 0 and tree_data_2["tree_age_completeness"] == 0:
             delete_ids.append(id_2)
