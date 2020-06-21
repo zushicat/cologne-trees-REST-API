@@ -9,7 +9,7 @@ def _get_compressed_tree_data() -> List[str]:
     '''
     Load compressed file.
     '''
-    tar = tarfile.open("../cologne-treemap-api/data/trees_cologne_merged.jsonl.tar.gz") #, mode='rb:gz')
+    tar = tarfile.open("../cologne-treemap-api/data/trees_cologne_merged.jsonl.tar.gz")
     f = tar.extractfile("trees_cologne_merged.jsonl")
     lines = f.read().decode().split("\n")
     
