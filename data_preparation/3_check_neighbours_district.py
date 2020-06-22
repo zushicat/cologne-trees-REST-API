@@ -11,14 +11,6 @@ with open("data_prediction/data/all_tree_pairs_distance.jsonl") as f:
 with open("raw_trees_cologne_merged.jsonl") as f:
     tree_list: List[str] = f.read().split("\n")
 
-# with open("cologne_districts_by_id.json") as f:
-#     district_id_name: Dict[str, str] = json.load(f)
-
-
-
-# # ***
-# # re-arrange
-# district_name_id = {v: k for k, v in district_id_name.items()}
 
 # ***
 # 
@@ -28,15 +20,7 @@ for line in tree_list:
         tree_data: Dict[str, Any] = json.loads(line)
     except:
         continue
-    # # ***
-    # # check for base_info.district_number, base_info.district_name
-    # # if None: substitute by derived id and value from geo_info.city_district
-    # if tree_data["base_info"]["district_number"] is None:
-    #     pred_district_name = tree_data["geo_info"]["city_district"]
-    #     if district_name_id.get(pred_district_name) is not None:
-    #         tree_data["base_info"]["district_number"] = district_name_id[pred_district_name]
-    #         tree_data["base_info"]["district_name"] = pred_district_name
-
+    
     # ***
     # add new object for number of neighbours
     # neighbours list {<id>: {<id>:<distance>}} saved in separate file
@@ -45,9 +29,10 @@ for line in tree_list:
     trees_by_id[tree_data["tree_id"]] = tree_data
 
 # **********************************
-# delete trees which are TOO CLOSE
+# delete trees which are TOO CLOSE <= 2m
 # **********************************
-delete_ids = []
+delete_ids: List[str] = []
+replace_trees_by_id: Dict[str, Any] = {}
 
 for line in close_neighbour_pair_list:
     try:
@@ -62,14 +47,29 @@ for line in close_neighbour_pair_list:
     tree_data_2 = trees_by_id[id_2]
 
     # ***
-    # TODO: merge information .found_in_dataset
-    if tree_data_1["base_info_completeness"] > tree_data_2["base_info_completeness"]:
-        if tree_data_2["tree_measures_completeness"] == 0 and tree_data_2["tree_age_completeness"] == 0:
-            delete_ids.append(id_2)
+    # merge
+    keep_tree = None
+    skip_tree = None
+    if tree_data_1["dataset_completeness"] >= tree_data_2["dataset_completeness"]:
+        keep_tree = tree_data_1
+        skip_tree = tree_data_2
     else:
-        if tree_data_1["base_info_completeness"] < tree_data_2["base_info_completeness"]:
-            if tree_data_1["tree_measures_completeness"] == 0 and tree_data_1["tree_age_completeness"] == 0:
-                delete_ids.append(id_1)
+        keep_tree = tree_data_2
+        skip_tree = tree_data_1
+    
+    # use obj. with higher completeness
+    for attr_key in ["base_info", "tree_taxonomy", "tree_measures", "tree_age"]:
+        if keep_tree[f"{attr_key}_completeness"] < skip_tree[f"{attr_key}_completeness"]:
+            keep_tree[attr_key] = skip_tree[attr_key]
+    
+    # keep dataset occurance information; use simple bool operation
+    for dataset in ["2017", "2020"]:
+        keep_tree["found_in_dataset"][dataset] = keep_tree["found_in_dataset"][dataset] and skip_tree["found_in_dataset"][dataset]
+
+    # done: add to delete list and add to replacement list
+    delete_ids.append(skip_tree["tree_id"])
+    replace_trees_by_id[keep_tree["tree_id"]] = keep_tree
+
 
 # remove identified ids
 for del_id in set(delete_ids):
@@ -77,7 +77,8 @@ for del_id in set(delete_ids):
 
 
 # **********************************
-# process neighbour trees and save in separate file by id
+# neighbors per tree
+# get / count neighbour trees per id and save in separate file by id
 # **********************************
 neighbours_by_id: Dict[str, Dict[str, float]] = {}
 for line in all_neighbour_pair_list:
@@ -100,7 +101,9 @@ for line in all_neighbour_pair_list:
     neighbours_by_id[current_tree_id][current_neighbour_tree_id] = distance
     
 
-for idx, vals in neighbours_by_id.items():
+for idx, vals in neighbours_by_id.items():  # corresponding to trees_by_id
+    if replace_trees_by_id.get(idx) is not None:  # new info from merge (see: above)
+        trees_by_id[idx] = replace_trees_by_id[idx]
     trees_by_id[idx]["num_neighbours_radius_50"] = len(vals.keys())
 
 
