@@ -71,9 +71,6 @@ for line in close_neighbour_pair_list:
     replace_trees_by_id[keep_tree["tree_id"]] = keep_tree
 
 
-
-# now 5839 / previously 1268
-
 # remove identified ids
 for del_id in set(delete_ids):
     del trees_by_id[del_id]
