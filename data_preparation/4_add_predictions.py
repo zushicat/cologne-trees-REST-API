@@ -48,18 +48,16 @@ if __name__ == "__main__":
 
         tree_id = tree_data["tree_id"]
         
-        if predictions_age.get(tree_id) is None:
-            continue
+        if predictions_age.get(tree_id) is not None:
+            current_prediction = predictions_age[tree_id]
+            
+            if tree_data.get("predictions") is None:
+                tree_data["predictions"] = {}
 
-        current_prediction = predictions_age[tree_id]
-        
-        if tree_data.get("predictions") is None:
-            tree_data["predictions"] = {}
-
-        tree_data["predictions"]["age_prediction"] = {
-            "age_group_2020": int(current_prediction["age_group"]),
-            "probabiliy_age_group_2020": float(current_prediction["probability"])
-        }
+            tree_data["predictions"]["age_prediction"] = {
+                "age_group_2020": int(current_prediction["age_group"]),
+                "probabiliy_age_group_2020": float(current_prediction["probability"])
+            }
 
         lines.append(tree_data)
 
