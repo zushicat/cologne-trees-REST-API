@@ -28,7 +28,7 @@ def _recalc_age_values(tree_age_data: Dict[str, Any], planting_age: int) -> Dict
     tree_age_data["age_in_2017"] = 2017 - tree_age_data["year_sprout"]
     tree_age_data["age_in_2020"] = 2020 - tree_age_data["year_sprout"]
 
-    for j, group in enumerate([(1,18), (18,26), (26,41), (41,1000)]):
+    for j, group in enumerate([(1,26), (26,41), (41,1000)]):
         lower_boundary = group[0]
         upper_boundary = group[1]
         if tree_age_data["age_in_2020"] >= lower_boundary and tree_age_data["age_in_2020"] < upper_boundary:
