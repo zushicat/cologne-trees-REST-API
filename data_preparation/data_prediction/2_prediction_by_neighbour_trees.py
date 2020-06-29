@@ -84,22 +84,11 @@ def _get_tree_features(df: pd.DataFrame) -> Dict[str, Any]:
     
     return tree_features_by_id
 
+
 # *******************************************************
 #
 # *******************************************************
-if __name__ == "__main__":
-    df = _load_data()
-    tree_pairs_by_id = _load_neighbour_pairs()
-    
-    label_encoder = LabelEncoder()
-    
-    df["encoded_genus"] = label_encoder.fit_transform(df["genus"].astype(str))
-    
-    df_has_all, df_has_no_age, df_has_none = _split_data_train_pred(df)
-    # print(len(df_has_all), len(df_has_no_age), len(df_has_none))
-
-    tree_features_by_id = _get_tree_features(df_has_all)
-
+def _evaluate(df_has_all: pd.DataFrame, tree_features_by_id: Dict[str, Any], tree_pairs_by_id: Dict[str, Any], max_distance: int) -> None:
     predictions: Dict[str, Any] = {}
     count_correct_genus = 0
     count_correct_age_group = 0
@@ -107,8 +96,8 @@ if __name__ == "__main__":
     with_neighbours = 0
     all_trees = 0
     for row_index, row in df_has_all.iterrows():
-        if row_index == 10000:
-            break
+        # if row_index == 2:
+        #     break
 
         all_trees += 1
         current_tree_id = row["id"]
@@ -131,16 +120,114 @@ if __name__ == "__main__":
             "genus": {
                 "gt": gt_genus,
                 "prediction": None,
-                "equal": False
             },
             "age_group": {
                 "gt": gt_age_group,
                 "prediction": None,
-                "equal": False,
-                "delta": None
-            }
+            },
+            "num_all_valid_neighbours": 0,
+            "num_clusters": 0
         }
     
+        try:
+            # ***
+            # build cluster
+            cluster_data = np.empty((0, 2))
+            
+            for idx, distance in tree_pairs_by_id[current_tree_id].items():
+                if tree_features_by_id.get(idx) is None:  # trees without features are not in dict
+                    continue
+                
+                distance = int(round(distance))
+                genus = tree_features_by_id[idx]["encoded_genus"]
+                age_group = tree_features_by_id[idx]["age_group"]
+
+                if distance > max_distance:
+                    continue
+
+                predictions[current_tree_id]["num_all_valid_neighbours"] += 1
+
+                cluster_data = np.append(cluster_data, np.array([[age_group, genus]]), axis=0)
+                # cluster_data = np.append(cluster_data, np.array([[genus]]), axis=0)
+                # cluster_data = np.append(cluster_data, np.array([[genus, distance]]), axis=0)
+                
+            #print(json.dumps(bla, indent=2))
+            # print(row_index)
+            # print(cluster_data)
+
+            X = StandardScaler().fit_transform(cluster_data)
+            clusters = DBSCAN(eps=0.5, min_samples=1).fit(X)
+
+            core_samples_mask = np.zeros_like(clusters.labels_, dtype=bool)
+            core_samples_mask[clusters.core_sample_indices_] = True
+
+            clusters_labels = clusters.labels_
+
+            predictions[current_tree_id]["num_clusters"] = len(list(set(clusters_labels)))
+            predictions[current_tree_id]["counts_cluster"] = []
+
+            clusters_data = {}
+            for index, label in enumerate(clusters_labels):
+                label = int(label)
+                if clusters_data.get(label) is None:
+                    age_group = int(cluster_data[index, 0])
+                    genus = int(cluster_data[index, 1])
+                    clusters_data[label] = {
+                        "count": 0, 
+                        "age_group": age_group, 
+                        "genus": label_encoder.inverse_transform([genus])[0]
+                    }
+                clusters_data[label]["count"] += 1
+                
+            # print(json.dumps(clusters_data, indent=2))
+            # print()
+
+            # ***
+            # get max cluster
+            max_key = None
+            max_count = 0
+            for cluster_label, cluster_vals in clusters_data.items():
+                if cluster_vals["count"] >= max_count:
+                    max_count = cluster_vals["count"]
+                    max_key = cluster_label
+                
+                predictions[current_tree_id]["counts_cluster"].append(cluster_vals["count"])
+            
+
+            predictions[current_tree_id]["max_count_cluster"] = max_count
+            
+            # print(clusters_data[max_key]["age_group"], clusters_data[max_key]["genus"])
+            predictions[current_tree_id]["genus"]["prediction"] = clusters_data[max_key]["genus"]
+            predictions[current_tree_id]["age_group"]["prediction"] = clusters_data[max_key]["age_group"]
+            
+            if predictions[current_tree_id]["genus"]["prediction"] == gt_genus:
+                count_correct_genus += 1
+            if predictions[current_tree_id]["age_group"]["prediction"] == gt_age_group:
+                count_correct_age_group += 1
+
+            # print(predictions[current_tree_id])
+            # print("---")
+            
+            count_predicted += 1
+        except:
+           continue
+
+    print(all_trees, with_neighbours, round(with_neighbours/all_trees, 2), count_predicted, round(count_predicted/all_trees, 2))
+    print(count_predicted, count_correct_genus, round(count_correct_genus/count_predicted, 2), count_correct_age_group, round(count_correct_age_group/count_predicted, 2))
+
+
+def _predict(df_has_none: pd.DataFrame, tree_features_by_id: Dict[str, Any], tree_pairs_by_id: Dict[str, Any], max_distance: int) -> Dict[str, Any]:
+    predictions: Dict[str, Any] = {}
+    count_predicted = 0
+    for row_index, row in df_has_none.iterrows():
+        # if row_index == 2:
+        #     break
+
+        current_tree_id = row["id"]
+
+        if tree_pairs_by_id.get(current_tree_id) is None:
+            continue
+        
         try:
             # ***
             # build cluster
@@ -193,18 +280,52 @@ if __name__ == "__main__":
                     max_count = cluster_vals["count"]
                     max_key = cluster_label
             
-            # print(clusters_data[max_key]["age_group"], clusters_data[max_key]["genus"])
-            predictions[current_tree_id]["genus"]["prediction"] = clusters_data[max_key]["genus"]
-            predictions[current_tree_id]["age_group"]["prediction"] = clusters_data[max_key]["age_group"]
-            
-            if clusters_data[max_key]["genus"] == gt_genus:
-                count_correct_genus += 1
-            if clusters_data[max_key]["age_group"] == gt_age_group:
-                count_correct_age_group += 1
+            # ***
+            #
+            predictions[current_tree_id] = {
+                "tree_id": current_tree_id,
+                "genus": clusters_data[max_key]["genus"],
+                "age_group": clusters_data[max_key]["age_group"],
+                # "num_cluster": len(clusters_data.keys()),
+                # "num_all_neighbours": len(tree_pairs_by_id[current_tree_id].keys()),
+                # "max_count": max_count,
+                "probability": round(max_count/len(tree_pairs_by_id[current_tree_id].keys()), 2)
+            }
             
             count_predicted += 1
         except:
             continue
 
-    print(all_trees, with_neighbours, round(with_neighbours/all_trees, 2))
-    print(count_predicted, count_correct_genus, round(count_correct_genus/count_predicted, 2), count_correct_age_group, round(count_correct_age_group/count_predicted, 2))
+    # print(count_predicted, len(df_has_none), round(count_predicted/len(df_has_none), 2))
+    # print(json.dumps(predictions, indent=2))
+    return predictions  # <id>: { ... }
+
+
+# *******************************************************
+#
+# *******************************************************
+if __name__ == "__main__":
+    df = _load_data()
+    tree_pairs_by_id = _load_neighbour_pairs()
+
+    print(f"-- data loaded --")
+    
+    label_encoder = LabelEncoder()
+    
+    df["encoded_genus"] = label_encoder.fit_transform(df["genus"].astype(str))
+    
+    df_has_all, df_has_no_age, df_has_none = _split_data_train_pred(df)
+    # print(len(df_has_all), len(df_has_no_age), len(df_has_none))
+    print(f"-- data split --")
+    
+    tree_features_by_id = _get_tree_features(df_has_all)
+    print(f"-- features loaded --")
+
+    # _evaluate(df_has_all, tree_features_by_id, tree_pairs_by_id, 20)
+    prediction_results = _predict(df_has_all, tree_features_by_id, tree_pairs_by_id, 20)
+
+    # ***
+    #
+    df = pd.DataFrame(prediction_results.values())
+    df.to_csv("data/predictions_by_radius.csv", index=False)
+    
