@@ -43,10 +43,10 @@ def _get_reduced_tree_data(tree_data: Dict[str, Any]) -> Dict[str, Any]: # <-- c
                 pass
     
     if tree_data["tree_taxonomy"]["genus"] is not None:
-        new_tree_data["age_group"] = tree_data["tree_taxonomy"]["genus"]
+        new_tree_data["genus"] = tree_data["tree_taxonomy"]["genus"]
     else:
         try: 
-            new_tree_data["age_group"] = tree_data["predictions"]["by_radius_prediction"]["genus"]
+            new_tree_data["genus"] = tree_data["predictions"]["by_radius_prediction"]["genus"]
         except:
             pass
 

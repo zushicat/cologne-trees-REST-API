@@ -68,32 +68,33 @@ if __name__ == "__main__":
 
         tree_id = tree_data["tree_id"]
         
+        
+        if predictions_age.get(tree_id) is not None or predictions_by_radius.get(tree_id) is not None:
+            if tree_data.get("predictions") is None:
+                tree_data["predictions"] = {
+                    "age_prediction": None,
+                    "by_radius_prediction": None
+                }
+
         # ***
         # age_group only prediction
         if predictions_age.get(tree_id) is not None:
-            if tree_data.get("predictions") is None:
-                tree_data["predictions"] = {}
-
             tree_data["predictions"]["age_prediction"] = {
                 "age_group_2020": int(predictions_age[tree_id]["age_group"]),
-                "probabiliy_age_group_2020": float(predictions_age[tree_id]["probability"])
+                "probabiliy": float(predictions_age[tree_id]["probability"])
             }
 
         # ***
         # prediction by radius
         if predictions_by_radius.get(tree_id) is not None:
-            if tree_data.get("predictions") is None:
-                tree_data["predictions"] = {}
-
             tree_data["predictions"]["by_radius_prediction"] = {
                 "age_group_2020": int(predictions_by_radius[tree_id]["age_group"]),
                 "genus": predictions_by_radius[tree_id]["genus"],
-                "probabiliy_by_radius": float(predictions_by_radius[tree_id]["probability"])
+                "probabiliy": float(predictions_by_radius[tree_id]["probability"])
             }
 
         lines.append(tree_data)
 
-    
     # write cleaned file
     with open("trees_cologne_merged.jsonl", "w") as f:  # overwrite old data
         for line in lines:
