@@ -26,7 +26,7 @@ def _get_reduced_tree_data(tree_data: Dict[str, Any]) -> Dict[str, Any]: # <-- c
         "district_number": tree_data["base_info"]["district_number"],
         "lat": tree_data["geo_info"]["lat"],
         "lng": tree_data["geo_info"]["lng"],
-        "genus": tree_data["tree_taxonomy"]["genus"],
+        "genus": None,
         "in_dataset_2020": tree_data["found_in_dataset"]["2020"],
         "age_group": None  # from data or prediction
     }
@@ -37,7 +37,19 @@ def _get_reduced_tree_data(tree_data: Dict[str, Any]) -> Dict[str, Any]: # <-- c
         try: 
             new_tree_data["age_group"] = tree_data["predictions"]["age_prediction"]["age_group_2020"]
         except:
+            try:
+                new_tree_data["age_group"] = tree_data["predictions"]["by_radius_prediction"]["age_group_2020"]
+            except:
+                pass
+    
+    if tree_data["tree_taxonomy"]["genus"] is not None:
+        new_tree_data["age_group"] = tree_data["tree_taxonomy"]["genus"]
+    else:
+        try: 
+            new_tree_data["age_group"] = tree_data["predictions"]["by_radius_prediction"]["genus"]
+        except:
             pass
+
 
     return new_tree_data
 

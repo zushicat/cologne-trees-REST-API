@@ -18,7 +18,7 @@ def _get_compressed_tree_data() -> List[str]:
 
 def _get_predictions_age() -> Dict[str, Dict[str, Any]]:
     '''
-    columns: tree_id, age_group_2020, probabiliy
+    columns: tree_id, age_group_2020, probability
     '''
     df_predictions_age = pd.read_csv("data_prediction/data/predictions_age_group.csv")
 
@@ -26,15 +26,35 @@ def _get_predictions_age() -> Dict[str, Dict[str, Any]]:
     for index, row in df_predictions_age.iterrows():
         predictions_age[row["tree_id"]] = {
             "age_group": row["age_group_2020"],
-            "probability": row["probabiliy"]
+            "probability": row["probability"]
         }
     
     return predictions_age
 
 
+def _get_predictions_by_radius() -> Dict[str, Dict[str, Any]]:
+    '''
+    columns: tree_id, genus, age_group, probability
+    '''
+    df_predictions_age = pd.read_csv("data_prediction/data/predictions_by_radius.csv")
+
+    predictions_by_radius: Dict[str, Dict[str, Any]] = {}
+    for index, row in df_predictions_age.iterrows():
+        predictions_by_radius[row["tree_id"]] = {
+            "age_group": row["age_group"],
+            "genus": row["genus"],
+            "probability": row["probability"]
+        }
+    
+    return predictions_by_radius
+
+
+
 if __name__ == "__main__":
     tree_data_str = _get_compressed_tree_data()
+    
     predictions_age = _get_predictions_age()
+    predictions_by_radius = _get_predictions_by_radius()
     
     lines: List[Dict[str, Any]] = []
     for i, line in enumerate(tree_data_str):
@@ -48,15 +68,27 @@ if __name__ == "__main__":
 
         tree_id = tree_data["tree_id"]
         
+        # ***
+        # age_group only prediction
         if predictions_age.get(tree_id) is not None:
-            current_prediction = predictions_age[tree_id]
-            
             if tree_data.get("predictions") is None:
                 tree_data["predictions"] = {}
 
             tree_data["predictions"]["age_prediction"] = {
-                "age_group_2020": int(current_prediction["age_group"]),
-                "probabiliy_age_group_2020": float(current_prediction["probability"])
+                "age_group_2020": int(predictions_age[tree_id]["age_group"]),
+                "probabiliy_age_group_2020": float(predictions_age[tree_id]["probability"])
+            }
+
+        # ***
+        # prediction by radius
+        if predictions_by_radius.get(tree_id) is not None:
+            if tree_data.get("predictions") is None:
+                tree_data["predictions"] = {}
+
+            tree_data["predictions"]["by_radius_prediction"] = {
+                "age_group_2020": int(predictions_by_radius[tree_id]["age_group"]),
+                "genus": predictions_by_radius[tree_id]["genus"],
+                "probabiliy_by_radius": float(predictions_by_radius[tree_id]["probability"])
             }
 
         lines.append(tree_data)
