@@ -3,7 +3,7 @@ Create csv file from tree data .tar.gz file with necessary features
 '''
 import json
 import tarfile
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 
@@ -17,6 +17,16 @@ def _get_compressed_data() -> List[str]:
     lines = f.read().decode().split("\n")
     
     return lines
+
+
+def _get_age_group_incl_age_prediction(tree_data: Dict[str, Any]) -> Optional[int]:
+    age_group = tree["tree_age"]["age_group_2020"]
+    if age_group is None:
+        try:
+            age_group = tree_data["predictions"]["age_prediction"]["age_group_2020"]
+        except:
+            pass
+    return age_group
 
 
 if __name__ == "__main__":
@@ -39,7 +49,7 @@ if __name__ == "__main__":
                 "treetop_radius": tree["tree_measures"]["treetop_radius"],
                 "bole_radius": tree["tree_measures"]["bole_radius"],
                 "age": tree["tree_age"]["year_sprout"],
-                "age_group_2020": tree["tree_age"]["age_group_2020"],
+                "age_group_2020": _get_age_group_incl_age_prediction(tree),
                 "genus": tree["tree_taxonomy"]["genus"],
                 "type": tree["tree_taxonomy"]["type"],
                 "name_german": "|".join(tree["tree_taxonomy"]["name_german"]) if tree["tree_taxonomy"]["name_german"] is not None else None,
