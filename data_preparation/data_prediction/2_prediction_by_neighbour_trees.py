@@ -315,7 +315,7 @@ if __name__ == "__main__":
     df["encoded_genus"] = label_encoder.fit_transform(df["genus"].astype(str))
     
     df_has_all, df_has_no_age, df_has_none = _split_data_train_pred(df)
-    # print(len(df_has_all), len(df_has_no_age), len(df_has_none))
+    print(len(df_has_all), len(df_has_no_age), len(df_has_none))
     print(f"-- data split --")
     
     tree_features_by_id = _get_tree_features(df_has_all)

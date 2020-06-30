@@ -57,6 +57,7 @@ if __name__ == "__main__":
     predictions_by_radius = _get_predictions_by_radius()
     
     lines: List[Dict[str, Any]] = []
+
     for i, line in enumerate(tree_data_str):
         try:
             tree_data = json.loads(line)
@@ -67,7 +68,6 @@ if __name__ == "__main__":
             tree_data["predictions"]: Optional[Dict[str, Any]] = None
 
         tree_id = tree_data["tree_id"]
-        
         
         if predictions_age.get(tree_id) is not None or predictions_by_radius.get(tree_id) is not None:
             if tree_data.get("predictions") is None:
@@ -83,7 +83,7 @@ if __name__ == "__main__":
                 "age_group_2020": int(predictions_age[tree_id]["age_group"]),
                 "probabiliy": float(predictions_age[tree_id]["probability"])
             }
-
+        
         # ***
         # prediction by radius
         if predictions_by_radius.get(tree_id) is not None:
@@ -92,6 +92,7 @@ if __name__ == "__main__":
                 "genus": predictions_by_radius[tree_id]["genus"],
                 "probabiliy": float(predictions_by_radius[tree_id]["probability"])
             }
+        
 
         lines.append(tree_data)
 
