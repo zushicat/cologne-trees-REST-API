@@ -179,7 +179,7 @@ if __name__ == "__main__":
         tmp = {
             "tree_id": df_has_no_age.iloc[i]["id"],
             "age_group_2020": int(classifier.classes_[max_prob_index]),
-            "probabiliy": round(p[max_prob_index], 2)
+            "probability": round(p[max_prob_index], 2)
         }
         collected_predictions.append(tmp)
 
