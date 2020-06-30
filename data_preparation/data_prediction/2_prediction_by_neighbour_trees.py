@@ -322,7 +322,7 @@ if __name__ == "__main__":
     print(f"-- features loaded --")
 
     # _evaluate(df_has_all, tree_features_by_id, tree_pairs_by_id, 20)
-    prediction_results = _predict(df_has_all, tree_features_by_id, tree_pairs_by_id, 20)
+    prediction_results = _predict(df_has_none, tree_features_by_id, tree_pairs_by_id, 50)
 
     # ***
     #
