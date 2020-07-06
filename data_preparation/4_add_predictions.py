@@ -93,7 +93,6 @@ if __name__ == "__main__":
                 "probabiliy": float(predictions_by_radius[tree_id]["probability"])
             }
         
-
         lines.append(tree_data)
 
     # write cleaned file
