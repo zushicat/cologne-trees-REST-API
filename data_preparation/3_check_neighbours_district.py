@@ -64,7 +64,7 @@ for line in close_neighbour_pair_list:
     
     # keep dataset occurance information; use simple bool operation
     for dataset in ["2017", "2020"]:
-        keep_tree["found_in_dataset"][dataset] = keep_tree["found_in_dataset"][dataset] and skip_tree["found_in_dataset"][dataset]
+        keep_tree["found_in_dataset"][dataset] = keep_tree["found_in_dataset"][dataset] or skip_tree["found_in_dataset"][dataset]
 
     # done: add to delete list and add to replacement list
     delete_ids.append(skip_tree["tree_id"])

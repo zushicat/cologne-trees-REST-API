@@ -2,7 +2,13 @@
 Merge data 2017 and 2020
 '''
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+
+
+# Debatable: Assume a certain default age when planting
+# According to Stadt Düsseldorf, a young tree spends it's first 8 - 12 years in tree nursery:
+# https://www.duesseldorf.de/stadtgruen/baeume-in-der-stadt/baum-doku.html
+PLANTING_AGE = 10
 
 
 def _add_to_list(tree_list: List[str], year: str, trees_by_utm: Dict[str, Any]) -> Dict[str, List[Dict[str, Any]]]:
@@ -20,11 +26,11 @@ def _add_to_list(tree_list: List[str], year: str, trees_by_utm: Dict[str, Any]) 
     return trees_by_utm
 
 
-def _recalc_age_values(tree_age_data: Dict[str, Any], planting_age: int) -> Dict[str, Any]:
+def _recalc_age_values(tree_age_data: Dict[str, Any]) -> Dict[str, Any]:
     '''
     Gets the "tree_age" object part.
     '''
-    tree_age_data["year_sprout"] = tree_age_data["year_planting"] - planting_age
+    tree_age_data["year_sprout"] = tree_age_data["year_planting"] - PLANTING_AGE
     tree_age_data["age_in_2017"] = 2017 - tree_age_data["year_sprout"]
     tree_age_data["age_in_2020"] = 2020 - tree_age_data["year_sprout"]
 
@@ -58,6 +64,13 @@ def _recalc_completeness(tree_data: Dict[str, Any]) -> Dict[str, Any]:
     return tree_data
     
 
+def _get_best_tree_from_treelist(tree_list: List[Dict[str, Any]]) -> Dict[str, Any]:
+    dataset_completeness_list = [x["dataset_completeness"] for x in tree_list]
+    best_completeness_index = dataset_completeness_list.index(max(dataset_completeness_list))
+
+    return tree_list[best_completeness_index]
+
+
 with open("raw_trees_cologne_2017.jsonl") as f:
     trees_2017_list = f.read().split("\n")
 
@@ -68,80 +81,60 @@ with open("raw_trees_cologne_2020.jsonl") as f:
 trees_by_utm: Dict[str, List[Dict[str, Any]]] = _add_to_list(trees_2017_list, "2017", {})
 trees_by_utm: Dict[str, List[Dict[str, Any]]] = _add_to_list(trees_2020_list, "2020", trees_by_utm)
 
-# Debatable: Assume a certain default age when planting
-# According to Stadt Düsseldorf, a young tree spends it's first 8 - 12 years in tree nursery:
-# https://www.duesseldorf.de/stadtgruen/baeume-in-der-stadt/baum-doku.html
-planting_age = 10
-
 merged_data: List[Dict[str, Any]] = []
-for utm_key in list(trees_by_utm.keys()):
-    len_2017 = len(trees_by_utm[utm_key]["2017"])
-    len_2020 = len(trees_by_utm[utm_key]["2020"])
 
+for utm_key, utm_vals in trees_by_utm.items():
+    current_tree_2017: Optional[Dict[str, Any]] = None
+    current_tree_2020: Optional[Dict[str, Any]] = None
+    
+    try:
+        current_tree_2017 = _get_best_tree_from_treelist(utm_vals["2017"])
+        # ***
+        # fill missing age data -> 2017
+        current_tree_2017["tree_age"]["year_planting"] = None
+        if current_tree_2017["tree_age"]["year_sprout"] is not None:
+            current_tree_2017["tree_age"]["year_planting"] = current_tree_2017["tree_age"]["year_sprout"] + PLANTING_AGE
+        current_tree_2017 = _recalc_completeness(current_tree_2017)
+    except:
+        pass
+
+    try:
+        current_tree_2020 = _get_best_tree_from_treelist(utm_vals["2020"])
+        # ***
+        # fill missing age data -> 2020
+        for age_key in ["age_in_2017", "age_in_2020", "age_group_2020", "year_sprout"]:
+            current_tree_2020["tree_age"][age_key] = None
+        if current_tree_2020["tree_age"]["year_planting"] is not None:
+            current_tree_2020["tree_age"] = _recalc_age_values(current_tree_2020["tree_age"])
+        current_tree_2020 = _recalc_completeness(current_tree_2020)
+    except:
+        pass
+    
     tmp_merged: Dict[str, Any] = {}
 
     available_in_dataset = {
-        "2017": False,
-        "2020": False
+        "2017": False if current_tree_2017 is None else True,
+        "2020": False if current_tree_2020 is None else True
     }
 
-    # ***
-    # 2020 only
-    if len_2017 == 0 and len_2020 == 1:
-        tmp_merged = trees_by_utm[utm_key]["2020"][0]
-        for age_key in ["age_in_2017", "age_in_2020", "age_group_2020", "year_sprout"]:
-            tmp_merged["tree_age"][age_key] = None
-        if tmp_merged["tree_age"]["year_planting"] is not None:
-            tmp_merged["tree_age"] = _recalc_age_values(tmp_merged["tree_age"], planting_age)
-        available_in_dataset["2020"] = True
-    
-    # ***
-    # 2017 only
-    if len_2017 == 1 and len_2020 == 0:
-        tmp_merged = trees_by_utm[utm_key]["2017"][0]
-        tmp_merged["tree_age"]["year_planting"] = None
-        if tmp_merged["tree_age"]["year_sprout"] is not None:
-            tmp_merged["tree_age"]["year_planting"] = tmp_merged["tree_age"]["year_sprout"] + planting_age
-        available_in_dataset["2017"] = True
-    
-    # ***
-    # 2017 and 2020
-    if len_2017 == 1 and len_2020 == 1:
-        available_in_dataset["2017"] = True
-        available_in_dataset["2020"] = True
-
+    if available_in_dataset["2017"] != available_in_dataset["2020"]:  # xor
         # ***
-        # 
-        if trees_by_utm[utm_key]["2017"][0]["dataset_completeness"] >= trees_by_utm[utm_key]["2020"][0]["dataset_completeness"]:
-            tmp_merged = trees_by_utm[utm_key]["2017"][0]
-            tmp_merged["tree_age"]["year_planting"] = trees_by_utm[utm_key]["2020"][0]["tree_age"]["year_planting"]
+        # tree only in one of both sets
+        if available_in_dataset["2017"] is True:
+            tmp_merged = current_tree_2017
         else:
-            tmp_merged = trees_by_utm[utm_key]["2020"][0]
-            tmp_merged["tree_age"]["age_in_2017"] = trees_by_utm[utm_key]["2017"][0]["tree_age"]["age_in_2017"]
-            tmp_merged["tree_age"]["age_in_2020"] = trees_by_utm[utm_key]["2017"][0]["tree_age"]["age_in_2020"]
-            tmp_merged["tree_age"]["age_group_2020"] = trees_by_utm[utm_key]["2017"][0]["tree_age"]["age_group_2020"]
-            tmp_merged["tree_age"]["year_sprout"] = trees_by_utm[utm_key]["2017"][0]["tree_age"]["year_sprout"]
-
+            tmp_merged = current_tree_2020
+    else:
         # ***
-        # debatable: trust the "year_planting" value in 2020 set more than the age estimation in 2017 set
-        if tmp_merged["tree_age"]["year_planting"] is not None:
-            tmp_merged["tree_age"] = _recalc_age_values(tmp_merged["tree_age"], planting_age)
+        # tree in both sets: prefer 2020 if equal complete, otherwise take best
+        if current_tree_2017["dataset_completeness"] == current_tree_2020["dataset_completeness"]:
+            tmp_merged = current_tree_2020
         else:
-            if tmp_merged["tree_age"]["year_sprout"] is not None:
-                tmp_merged["tree_age"]["year_planting"] = tmp_merged["tree_age"]["year_sprout"] + planting_age
+            tmp_merged = _get_best_tree_from_treelist([current_tree_2017, current_tree_2020])
 
-    # ***
-    # ignore for the moment
-    # TODO: create filter for most relevant in each list, then merge
-    if len_2017 > len_2020  and len_2017 > 1:  # both_uneven_2017_bigger num: 170
-        continue
-    if len_2020 > len_2017  and len_2020 > 1:  # both_uneven_2020_bigger num: 112
-        continue
-    
     # ***
     #
     try:
-        tmp_merged = _recalc_completeness(tmp_merged)
         tmp_merged["found_in_dataset"]: Dict[str, bool] = available_in_dataset
         merged_data.append(tmp_merged)
     except:

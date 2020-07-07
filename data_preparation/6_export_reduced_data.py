@@ -34,10 +34,12 @@ def _get_reduced_tree_data(tree_data: Dict[str, Any]) -> Dict[str, Any]: # <-- c
     if new_tree_data["age_group"] is None:
         if tree_data["predictions"] is not None:
             if tree_data["predictions"].get("age_prediction") is not None:
-                new_tree_data["age_group"] = tree_data["predictions"]["age_prediction"]["age_group_2020"]
+                if tree_data["predictions"]["age_prediction"]["probabiliy"] >= 0.5:
+                    new_tree_data["age_group"] = tree_data["predictions"]["age_prediction"]["age_group_2020"]
             else:
                 if tree_data["predictions"].get("by_radius_prediction") is not None:
-                    new_tree_data["age_group"] = tree_data["predictions"]["by_radius_prediction"]["age_group_2020"]
+                    if tree_data["predictions"]["by_radius_prediction"]["probabiliy"] >= 0.5:
+                        new_tree_data["age_group"] = tree_data["predictions"]["by_radius_prediction"]["age_group_2020"]
 
     
     if tree_data["tree_taxonomy"]["genus"] is not None:
@@ -51,6 +53,10 @@ def _get_reduced_tree_data(tree_data: Dict[str, Any]) -> Dict[str, Any]: # <-- c
 
     return new_tree_data
 
+count_2017 = 0
+count_2020 = 0
+count_both = 0
+count_none = 0
 
 if __name__ == "__main__":
     tree_data_str = _get_compressed_tree_data()
@@ -67,9 +73,16 @@ if __name__ == "__main__":
         # 
         new_tree_data = _get_reduced_tree_data(tree_data)
 
-        # if new_tree_data["age_group"] is None:
-        #     print("xxxx", new_tree_data["tree_id"])
-            #break
+        # ***
+        # DEBUG
+        if tree_data["found_in_dataset"]["2017"] is True and tree_data["found_in_dataset"]["2020"] is False:
+            count_2017 += 1
+        if tree_data["found_in_dataset"]["2017"] is False and tree_data["found_in_dataset"]["2020"] is True:
+            count_2020 += 1
+        if tree_data["found_in_dataset"]["2017"] is True and tree_data["found_in_dataset"]["2020"] is True:
+            count_both += 1
+        if tree_data["found_in_dataset"]["2017"] is False and tree_data["found_in_dataset"]["2020"] is False:
+            count_none += 1
         
         if collected_age_groups.get(new_tree_data["age_group"]) is None:
             collected_age_groups[new_tree_data["age_group"]] = 0
@@ -77,7 +90,13 @@ if __name__ == "__main__":
         
         new_tree_data_list.append(new_tree_data)
 
+    # ***
+    # DEBUG
     print(collected_age_groups)
+    print(count_2017)
+    print(count_2020)
+    print(count_both)
+    print(count_none)
     
     # ***
     # create reduced file
