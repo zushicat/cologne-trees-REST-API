@@ -1,5 +1,5 @@
 ### Description
-A simple API to request different accumulations about city trees in Cologne, Germany. 
+A simple API to dynamically request different accumulations about city trees in Cologne, Germany. 
 
 (Underlaying data "trees_cologne_2017.jsonl.tar.gz" is processed from the "Baumkataster" csv file, published by Stadt Köln: https://offenedaten-koeln.de/dataset/baumkataster-koeln)
 
